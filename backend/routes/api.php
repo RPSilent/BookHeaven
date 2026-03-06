@@ -411,5 +411,55 @@ Route::get('/admin/upload-sandman-image', function () {
     }
 });
 
+// Ruta temporal para hacer a Kristofer administrador (REMOVER DESPUES DE USAR)
+Route::get('/admin/make-kristofer-admin', function () {
+    try {
+        // Buscar el rol admin
+        $adminRole = \App\Models\Role::where('name', 'admin')->first();
+        
+        if (!$adminRole) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Rol admin no encontrado en la base de datos'
+            ], 404);
+        }
+        
+        // Buscar el usuario Kristofer
+        $user = \App\Models\User::where('name', 'Kristofer')
+            ->orWhere('email', 'LIKE', '%kristofer%')
+            ->first();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Usuario Kristofer no encontrado'
+            ], 404);
+        }
+        
+        // Actualizar el role_id
+        $oldRole = $user->role ? $user->role->name : 'sin rol';
+        $user->role_id = $adminRole->id;
+        $user->save();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario Kristofer actualizado a administrador',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'old_role' => $oldRole,
+                'new_role' => 'admin',
+                'role_id' => $user->role_id
+            ]
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});
+
 
 
