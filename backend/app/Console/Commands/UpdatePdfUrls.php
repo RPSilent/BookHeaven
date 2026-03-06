@@ -45,11 +45,16 @@ class UpdatePdfUrls extends Command
         
         // URLs de PDFs de Cloudinary para comics
         $comicsPdfs = [
-            'Batman: The Dark Knight Returns' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776396/bookheaven/comics/pdfs/bookheaven/comics/pdfs/batman_dark_knight.pdf',
-            'Spider-Man: Kraven\'s Last Hunt' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776400/bookheaven/comics/pdfs/bookheaven/comics/pdfs/spiderman_kraven.pdf',
             'Watchmen' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776423/bookheaven/comics/pdfs/bookheaven/comics/pdfs/watchmen.pdf',
+            'The Sandman' => null, // No hay PDF disponible
+            'Batman: The Killing Joke' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776396/bookheaven/comics/pdfs/bookheaven/comics/pdfs/batman_dark_knight.pdf',
             'Maus' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776403/bookheaven/comics/pdfs/bookheaven/comics/pdfs/maus.pdf',
             'V de Vendetta' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776419/bookheaven/comics/pdfs/bookheaven/comics/pdfs/v_vendetta.pdf',
+            'the amazing spiderman' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776400/bookheaven/comics/pdfs/bookheaven/comics/pdfs/spiderman_kraven.pdf',
+            'X-Men: Days of Future Past' => null, // No hay PDF disponible
+            'Civil War' => null, // No hay PDF disponible
+            'The Walking Dead' => null, // No hay PDF disponible
+            'Deadpool' => null, // No hay PDF disponible
         ];
         
         // Actualizar libros
@@ -75,10 +80,12 @@ class UpdatePdfUrls extends Command
         // Actualizar comics
         $comicsUpdated = 0;
         foreach ($comicsPdfs as $titulo => $pdfUrl) {
-            $updated = Comic::where('titulo', $titulo)->update(['pdf' => $pdfUrl]);
-            if ($updated) {
-                $comicsUpdated++;
-                $this->info("   ✅ Comic '{$titulo}' actualizado");
+            if ($pdfUrl !== null) { // Solo actualizar si hay URL de PDF
+                $updated = Comic::where('titulo', $titulo)->update(['pdf' => $pdfUrl]);
+                if ($updated) {
+                    $comicsUpdated++;
+                    $this->info("   ✅ Comic '{$titulo}' actualizado");
+                }
             }
         }
         
