@@ -241,41 +241,65 @@ Route::get('/admin/update-pdf-urls', function () {
 // Ruta temporal para actualizar URLs de PDFs rápido con SQL (REMOVER DESPUES DE USAR)
 Route::get('/admin/update-pdf-urls-quick', function () {
     try {
-        // Actualizar libros directamente con SQL
-        DB::statement("UPDATE libros SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776197/bookheaven/libros/pdfs/bookheaven/libros/pdfs/1.pdf' WHERE titulo = 'Cien años de soledad'");
-        DB::statement("UPDATE libros SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776203/bookheaven/libros/pdfs/bookheaven/libros/pdfs/don_quijote.pdf' WHERE titulo = 'Don Quijote de la Mancha'");
-        DB::statement("UPDATE libros SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776197/bookheaven/libros/pdfs/bookheaven/libros/pdfs/1.pdf' WHERE titulo = '1984'");
-        DB::statement("UPDATE libros SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776224/bookheaven/libros/pdfs/bookheaven/libros/pdfs/senor_anillos.pdf' WHERE titulo = 'El Señor de los Anillos'");
-        DB::statement("UPDATE libros SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776213/bookheaven/libros/pdfs/bookheaven/libros/pdfs/harry_potter.pdf' WHERE titulo = 'Harry Potter y la Piedra Filosofal'");
-        DB::statement("UPDATE libros SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776222/bookheaven/libros/pdfs/bookheaven/libros/pdfs/principito.pdf' WHERE titulo = 'El Principito'");
-        DB::statement("UPDATE libros SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776200/bookheaven/libros/pdfs/bookheaven/libros/pdfs/crimen_castigo.pdf' WHERE titulo = 'Crimen y castigo'");
-        DB::statement("UPDATE libros SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776215/bookheaven/libros/pdfs/bookheaven/libros/pdfs/metamorfosis.pdf' WHERE titulo = 'La metamorfosis'");
-        DB::statement("UPDATE libros SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776217/bookheaven/libros/pdfs/bookheaven/libros/pdfs/orgullo_prejuicio.pdf' WHERE titulo = 'Orgullo y prejuicio'");
+        $results = [];
+        
+        // Actualizar libros directamente con verificación de filas afectadas
+        $libros = [
+            'Cien años de soledad' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776197/bookheaven/libros/pdfs/bookheaven/libros/pdfs/1.pdf',
+            'Don Quijote de la Mancha' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776203/bookheaven/libros/pdfs/bookheaven/libros/pdfs/don_quijote.pdf',
+            '1984' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776197/bookheaven/libros/pdfs/bookheaven/libros/pdfs/1.pdf',
+            'El Señor de los Anillos' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776224/bookheaven/libros/pdfs/bookheaven/libros/pdfs/senor_anillos.pdf',
+            'Harry Potter y la Piedra Filosofal' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776213/bookheaven/libros/pdfs/bookheaven/libros/pdfs/harry_potter.pdf',
+            'El Principito' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776222/bookheaven/libros/pdfs/bookheaven/libros/pdfs/principito.pdf',
+            'Crimen y castigo' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776200/bookheaven/libros/pdfs/bookheaven/libros/pdfs/crimen_castigo.pdf',
+            'La metamorfosis' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776215/bookheaven/libros/pdfs/bookheaven/libros/pdfs/metamorfosis.pdf',
+            'Orgullo y prejuicio' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776217/bookheaven/libros/pdfs/bookheaven/libros/pdfs/orgullo_prejuicio.pdf',
+        ];
+        
+        foreach ($libros as $titulo => $pdf) {
+            $affected = DB::table('libros')->where('titulo', $titulo)->update(['pdf' => $pdf]);
+            $results['libros'][] = "$titulo: $affected filas";
+        }
         
         // Actualizar mangas
-        DB::statement("UPDATE mangas SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776271/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/Naruto.pdf' WHERE titulo = 'Naruto'");
-        DB::statement("UPDATE mangas SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776277/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/one.pdf' WHERE titulo = 'One Piece'");
-        DB::statement("UPDATE mangas SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776268/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/death.pdf' WHERE titulo = 'Death Note'");
-        DB::statement("UPDATE mangas SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776264/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/blue_lock.pdf' WHERE titulo = 'Blue Lock'");
-        DB::statement("UPDATE mangas SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776245/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/demon_slayer.pdf' WHERE titulo = 'Demon Slayer'");
-        DB::statement("UPDATE mangas SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776247/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/attack.pdf' WHERE titulo = 'Attack on Titan'");
+        $mangas = [
+            'Naruto' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776271/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/Naruto.pdf',
+            'One Piece' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776277/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/one.pdf',
+            'Death Note' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776268/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/death.pdf',
+            'Blue Lock' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776264/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/blue_lock.pdf',
+            'Demon Slayer' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776245/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/demon_slayer.pdf',
+            'Attack on Titan' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776247/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/attack.pdf',
+        ];
+        
+        foreach ($mangas as $titulo => $pdf) {
+            $affected = DB::table('mangas')->where('titulo', $titulo)->update(['pdf' => $pdf]);
+            $results['mangas'][] = "$titulo: $affected filas";
+        }
         
         // Actualizar comics
-        DB::statement("UPDATE comics SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776423/bookheaven/comics/pdfs/bookheaven/comics/pdfs/watchmen.pdf' WHERE titulo = 'Watchmen'");
-        DB::statement("UPDATE comics SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776396/bookheaven/comics/pdfs/bookheaven/comics/pdfs/batman_dark_knight.pdf' WHERE titulo = 'Batman: The Killing Joke'");
-        DB::statement("UPDATE comics SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776403/bookheaven/comics/pdfs/bookheaven/comics/pdfs/maus.pdf' WHERE titulo = 'Maus'");
-        DB::statement("UPDATE comics SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776419/bookheaven/comics/pdfs/bookheaven/comics/pdfs/v_vendetta.pdf' WHERE titulo = 'V de Vendetta'");
-        DB::statement("UPDATE comics SET pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776400/bookheaven/comics/pdfs/bookheaven/comics/pdfs/spiderman_kraven.pdf' WHERE titulo = 'the amazing spiderman'");
+        $comics = [
+            'Watchmen' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776423/bookheaven/comics/pdfs/bookheaven/comics/pdfs/watchmen.pdf',
+            'Batman: The Killing Joke' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776396/bookheaven/comics/pdfs/bookheaven/comics/pdfs/batman_dark_knight.pdf',
+            'Maus' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776403/bookheaven/comics/pdfs/bookheaven/comics/pdfs/maus.pdf',
+            'V de Vendetta' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776419/bookheaven/comics/pdfs/bookheaven/comics/pdfs/v_vendetta.pdf',
+            'the amazing spiderman' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776400/bookheaven/comics/pdfs/bookheaven/comics/pdfs/spiderman_kraven.pdf',
+        ];
+        
+        foreach ($comics as $titulo => $pdf) {
+            $affected = DB::table('comics')->where('titulo', $titulo)->update(['pdf' => $pdf]);
+            $results['comics'][] = "$titulo: $affected filas";
+        }
         
         return response()->json([
             'success' => true,
-            'message' => 'URLs de PDFs actualizadas correctamente con SQL directo',
-            'output' => 'Actualizados: 9 libros, 6 mangas, 5 comics'
+            'message' => 'URLs de PDFs actualizadas con verificación de filas afectadas',
+            'results' => $results
         ]);
     } catch (\Exception $e) {
         return response()->json([
             'success' => false,
-            'error' => $e->getMessage()
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
         ], 500);
     }
 })->name('admin.update.pdfs.quick');
