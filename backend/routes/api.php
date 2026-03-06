@@ -349,11 +349,12 @@ Route::get('/admin/fix-sandman-image', function () {
     try {
         $sandman = \App\Models\Comic::where('titulo', 'The Sandman')->first();
         if ($sandman) {
-            $sandman->imagen = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776387/bookheaven/comics/imagenes/sand.png';
+            // TEMPORAL: Usar watch.png (con path duplicado) hasta que se suba sand.png
+            $sandman->imagen = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776387/bookheaven/comics/imagenes/bookheaven/comics/imagenes/watch.png';
             $sandman->save();
             return response()->json([
                 'success' => true,
-                'message' => 'Imagen de Sandman actualizada correctamente',
+                'message' => 'Imagen de Sandman actualizada TEMPORALMENTE a watch.png (hasta que sand.png se suba a Cloudinary)',
                 'comic' => $sandman
             ]);
         }
