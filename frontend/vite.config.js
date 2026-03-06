@@ -78,13 +78,21 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 500, // Reducido para advertencias de chunks grandes
     rollupOptions: {
       output: {
-        // OPTIMIZACIÓN: Estrategia inteligente de división de chunks
-        manualChunks: {
-          // Vendor chunks separados para mejor caching
-          vendor: ["react", "react-dom"],
-          "router-vendor": ["react-router-dom"],
-          "ui-vendor": ["recharts", "axios"],
-          // Lazy-load heavy dependencies
+        // OPTIMIZACIÓN: Estrategia simplificada de división de chunks
+        manualChunks(id) {
+          // Agrupar node_modules en vendor chunks
+          if (id.includes("node_modules")) {
+            if (id.includes("react") || id.includes("react-dom")) {
+              return "vendor";
+            }
+            if (id.includes("react-router")) {
+              return "router";
+            }
+            if (id.includes("recharts") || id.includes("axios")) {
+              return "ui";
+            }
+            return "vendor";
+          }
         },
         // Nombrado determinístico para mejor caching (hash basado en contenido)
         entryFileNames: "js/[name]-[hash].js",
