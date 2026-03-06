@@ -126,7 +126,7 @@ class ComicSeeder extends Seeder
         ];
 
         foreach ($comics as $comic) {
-            Comic::firstOrCreate(
+            Comic::updateOrCreate(
                 ['titulo' => $comic['titulo']],
                 $comic
             );

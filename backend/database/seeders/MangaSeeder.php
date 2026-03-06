@@ -126,7 +126,7 @@ class MangaSeeder extends Seeder
         ];
 
         foreach ($mangas as $manga) {
-            Manga::firstOrCreate(
+            Manga::updateOrCreate(
                 ['titulo' => $manga['titulo']],
                 $manga
             );

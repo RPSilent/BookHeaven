@@ -126,7 +126,7 @@ class LibroSeeder extends Seeder
         ];
 
         foreach ($libros as $libro) {
-            Libro::firstOrCreate(
+            Libro::updateOrCreate(
                 ['titulo' => $libro['titulo']],
                 $libro
             );
