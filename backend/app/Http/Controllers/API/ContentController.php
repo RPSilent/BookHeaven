@@ -345,14 +345,33 @@ class ContentController
             ], 404);
         }
 
-        // Si el PDF es una URL externa (Cloudinary), devolver la URL para que el cliente la abra directamente
+        // Si el PDF es una URL externa (Cloudinary), descargar y servir el archivo
         if (filter_var($model->pdf, FILTER_VALIDATE_URL)) {
-            return response()->json([
-                'success' => true,
-                'type' => 'url',
-                'url' => $model->pdf,
-                'message' => 'PDF alojado externamente'
-            ]);
+            try {
+                // Descargar el PDF de Cloudinary
+                $pdfContent = file_get_contents($model->pdf);
+                
+                if ($pdfContent === false) {
+                    return response()->json([
+                        'success' => false,
+                        'code' => 'DOWNLOAD_FAILED',
+                        'message' => 'No se pudo descargar el PDF de Cloudinary'
+                    ], 500);
+                }
+                
+                // Servir el PDF directamente
+                return response($pdfContent)
+                    ->header('Content-Type', 'application/pdf')
+                    ->header('Content-Disposition', 'inline; filename="' . basename($model->pdf) . '"');
+                    
+            } catch (\Exception $e) {
+                Log::error('Error downloading PDF from Cloudinary: ' . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'code' => 'CLOUDINARY_ERROR',
+                    'message' => 'Error al obtener el PDF: ' . $e->getMessage()
+                ], 500);
+            }
         }
 
         // Si es una ruta local, servir desde storage
