@@ -19,37 +19,43 @@ class DatabaseSeeder extends Seeder
 
         // Usuario admin
         $adminRole = \App\Models\Role::where('name', 'admin')->first();
-        User::create([
-            'name' => 'Kristofer Cano',
-            'email' => 'kristofercanotaborda@gmail.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
-            'role_id' => $adminRole->id,
-            'is_active' => true,
-            'email_verified_at' => now(),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'kristofercanotaborda@gmail.com'],
+            [
+                'name' => 'Kristofer Cano',
+                'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+                'role_id' => $adminRole->id,
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Usuario de prueba
         $standardRole = \App\Models\Role::where('name', 'standard')->first();
-        User::create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('password'),
-            'role_id' => $standardRole->id,
-            'is_active' => true,
-            'email_verified_at' => now(),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'role_id' => $standardRole->id,
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Usuario premium
         $premiumRole = \App\Models\Role::where('name', 'premium')->first();
-        User::create([
-            'name' => 'Premium User',
-            'email' => 'premium@example.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('premium123'),
-            'role_id' => $premiumRole->id,
-            'is_active' => true,
-            'email_verified_at' => now(),
-            'premium_expires_at' => now()->addMonths(12), // Premium por 12 meses
-        ]);
+        User::firstOrCreate(
+            ['email' => 'premium@example.com'],
+            [
+                'name' => 'Premium User',
+                'password' => \Illuminate\Support\Facades\Hash::make('premium123'),
+                'role_id' => $premiumRole->id,
+                'is_active' => true,
+                'email_verified_at' => now(),
+                'premium_expires_at' => now()->addMonths(12), // Premium por 12 meses
+            ]
+        );
 
         // Libros reales
         $this->call([

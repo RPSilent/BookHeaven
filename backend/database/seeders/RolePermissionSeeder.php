@@ -15,24 +15,30 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear roles
-        $adminRole = Role::create([
-            'name' => 'admin',
-            'display_name' => 'Administrador',
-            'description' => 'Tiene acceso total al sistema',
-        ]);
+        // Crear roles (firstOrCreate no arroja error si ya existen)
+        $adminRole = Role::firstOrCreate(
+            ['name' => 'admin'],
+            [
+                'display_name' => 'Administrador',
+                'description' => 'Tiene acceso total al sistema',
+            ]
+        );
 
-        $premiumRole = Role::create([
-            'name' => 'premium',
-            'display_name' => 'Usuario Premium',
-            'description' => 'Usuario con suscripción premium',
-        ]);
+        $premiumRole = Role::firstOrCreate(
+            ['name' => 'premium'],
+            [
+                'display_name' => 'Usuario Premium',
+                'description' => 'Usuario con suscripción premium',
+            ]
+        );
 
-        $standardRole = Role::create([
-            'name' => 'standard',
-            'display_name' => 'Usuario Estándar',
-            'description' => 'Usuario estándar sin suscripción',
-        ]);
+        $standardRole = Role::firstOrCreate(
+            ['name' => 'standard'],
+            [
+                'display_name' => 'Usuario Estándar',
+                'description' => 'Usuario estándar sin suscripción',
+            ]
+        );
 
         // Crear permisos
         $permissions = [
@@ -113,36 +119,48 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create($permission);
+            Permission::firstOrCreate(
+                ['name' => $permission['name']],
+                [
+                    'display_name' => $permission['display_name'],
+                    'description' => $permission['description'],
+                ]
+            );
         }
 
-        // Asignar permisos a roles
+        // Asignar permisos a roles (solo si no tienen permisos asignados)
         // Admin: todos los permisos
-        $adminPermissions = Permission::all();
-        foreach ($adminPermissions as $permission) {
-            $adminRole->givePermission($permission);
+        if ($adminRole->permissions()->count() === 0) {
+            $adminPermissions = Permission::all();
+            foreach ($adminPermissions as $permission) {
+                $adminRole->givePermission($permission);
+            }
         }
 
         // Premium: permisos limitados
-        $premiumPermissions = Permission::whereIn('name', [
-            'create_content',
-            'edit_content',
-            'upload_files',
-            'access_premium_content',
-            'access_all_content',
-        ])->get();
+        if ($premiumRole->permissions()->count() === 0) {
+            $premiumPermissions = Permission::whereIn('name', [
+                'create_content',
+                'edit_content',
+                'upload_files',
+                'access_premium_content',
+                'access_all_content',
+            ])->get();
 
-        foreach ($premiumPermissions as $permission) {
-            $premiumRole->givePermission($permission);
+            foreach ($premiumPermissions as $permission) {
+                $premiumRole->givePermission($permission);
+            }
         }
 
         // Standard: permisos muy limitados
-        $standardPermissions = Permission::whereIn('name', [
-            'view_dashboard', // Puede ver su propio dashboard
-        ])->get();
+        if ($standardRole->permissions()->count() === 0) {
+            $standardPermissions = Permission::whereIn('name', [
+                'view_dashboard', // Puede ver su propio dashboard
+            ])->get();
 
-        foreach ($standardPermissions as $permission) {
-            $standardRole->givePermission($permission);
+            foreach ($standardPermissions as $permission) {
+                $standardRole->givePermission($permission);
+            }
         }
 
         // Crear usuario admin de prueba si no existe
