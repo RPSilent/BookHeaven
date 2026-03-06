@@ -369,5 +369,46 @@ Route::get('/admin/fix-sandman-image', function () {
     }
 });
 
+// Ruta temporal para subir sand.png a Cloudinary (REMOVER DESPUES DE USAR)
+Route::get('/admin/upload-sandman-image', function () {
+    try {
+        $localPath = public_path('storage/media/comics/imagenes/sand.png');
+        
+        if (!file_exists($localPath)) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Archivo sand.png no encontrado en: ' . $localPath
+            ], 404);
+        }
+        
+        // Subir a Cloudinary
+        $cloudinary = new \Cloudinary\Cloudinary();
+        $result = $cloudinary->uploadApi()->upload($localPath, [
+            'folder' => 'bookheaven/comics/imagenes',
+            'public_id' => 'sand',
+            'resource_type' => 'image'
+        ]);
+        
+        // Actualizar base de datos
+        $sandman = \App\Models\Comic::where('titulo', 'The Sandman')->first();
+        if ($sandman) {
+            $sandman->imagen = $result['secure_url'];
+            $sandman->save();
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Imagen subida y actualizada correctamente',
+            'cloudinary_url' => $result['secure_url'],
+            'comic' => $sandman
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});
+
 
 
