@@ -335,7 +335,21 @@ class ContentController
             ActivityLog::log('download', $user, ucfirst($type), $id);
         }
 
-        // Obtener la ruta correcta del PDF desde el disco público
+        // Si el PDF es null, devolver error
+        if (empty($model->pdf)) {
+            return response()->json([
+                'success' => false,
+                'code' => 'PDF_NOT_AVAILABLE',
+                'message' => 'Este contenido no tiene un PDF disponible',
+            ], 404);
+        }
+
+        // Si el PDF es una URL externa (Cloudinary), redirigir
+        if (filter_var($model->pdf, FILTER_VALIDATE_URL)) {
+            return redirect($model->pdf);
+        }
+
+        // Si es una ruta local, servir desde storage
         $relativePath = $model->pdf;
         $disk = Storage::disk('public_direct');
         $path = $disk->path($relativePath);
