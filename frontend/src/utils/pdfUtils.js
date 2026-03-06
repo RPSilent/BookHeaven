@@ -160,7 +160,7 @@ export const openPDF = async (options) => {
 
     // Verificar si la respuesta es JSON (URL externa) o PDF blob
     const contentType = response.headers.get("content-type");
-    
+
     if (contentType && contentType.includes("application/json")) {
       // Es una URL externa (Cloudinary)
       const data = await response.json();
@@ -270,7 +270,7 @@ export const downloadPDF = async (options) => {
 
     // Verificar si la respuesta es JSON (URL externa) o PDF blob
     const contentType = response.headers.get("content-type");
-    
+
     if (contentType && contentType.includes("application/json")) {
       // Es una URL externa (Cloudinary)
       const data = await response.json();

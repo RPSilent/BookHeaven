@@ -201,5 +201,23 @@ Route::get('/admin/cleanup-database', function () {
     }
 })->name('admin.cleanup.database');
 
+// Ruta temporal para reseed con URLs de Cloudinary (REMOVER DESPUES DE USAR)
+Route::get('/admin/reseed-content', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('content:reseed');
+        $output = \Illuminate\Support\Facades\Artisan::output();
+        return response()->json([
+            'success' => true,
+            'message' => 'Reseed ejecutado correctamente',
+            'output' => $output
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+})->name('admin.reseed.content');
+
 
 
