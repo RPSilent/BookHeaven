@@ -189,7 +189,7 @@ class ContentController
         
         // Select solo campos necesarios para mejorar rendimiento
         $query = Libro::select([
-            'id', 'titulo', 'descripcion', 'autor', 'imagen', 'genero', 
+            'id', 'titulo', 'descripcion', 'autor', 'imagen', 'pdf', 'genero', 
             'is_premium', 'popularidad', 'created_at', 'uploaded_by'
         ]);
 
@@ -235,6 +235,7 @@ class ContentController
                 'descripcion' => $libro->descripcion,
                 'autor' => $libro->autor,
                 'imagen' => $libro->imagen,
+                'pdf' => $libro->pdf,
                 'genero' => $libro->genero,
                 'is_premium' => $libro->is_premium,
                 'popularidad' => $libro->popularidad,
@@ -765,7 +766,7 @@ class ContentController
         
         // Select solo campos necesarios
         $query = Manga::select([
-            'id', 'titulo', 'descripcion', 'autor', 'imagen', 'genero', 
+            'id', 'titulo', 'descripcion', 'autor', 'imagen', 'pdf', 'genero', 
             'is_premium', 'popularidad', 'created_at', 'uploaded_by'
         ]);
 
@@ -1018,7 +1019,7 @@ class ContentController
         
         // Select solo campos necesarios
         $query = Comic::select([
-            'id', 'titulo', 'descripcion', 'autor', 'imagen', 'genero', 
+            'id', 'titulo', 'descripcion', 'autor', 'imagen', 'pdf', 'genero', 
             'is_premium', 'popularidad', 'created_at', 'uploaded_by'
         ]);
 
