@@ -173,7 +173,7 @@ if (config('app.env') !== 'production') {
             ->name('debug.dashboard.seed')
             ->withoutMiddleware('throttle');
         
-        Route::get('/clear', [DebugDashboardController::class, 'clearData'])
+        Route::get ('/clear', [DebugDashboardController::class, 'clearData'])
             ->name('debug.dashboard.clear')
             ->withoutMiddleware('throttle');
         
@@ -182,6 +182,24 @@ if (config('app.env') !== 'production') {
             ->withoutMiddleware('throttle');
     });
 }
+
+// Ruta temporal de limpieza de base de datos (REMOVER DESPUES DE USAR)
+Route::get('/admin/cleanup-database', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('db:cleanup');
+        $output = \Illuminate\Support\Facades\Artisan::output();
+        return response()->json([
+            'success' => true,
+            'message' => 'Limpieza ejecutada correctamente',
+            'output' => $output
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+})->name('admin.cleanup.database');
 
 
 
