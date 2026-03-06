@@ -249,7 +249,7 @@ Route::get('/admin/update-pdf-urls-quick', function () {
         $librosUpdated += DB::table('libros')->where('titulo', 'Cien años de soledad')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776197/bookheaven/libros/pdfs/bookheaven/libros/pdfs/1.pdf']);
         $librosUpdated += DB::table('libros')->where('titulo', 'Don Quijote de la Mancha')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776203/bookheaven/libros/pdfs/bookheaven/libros/pdfs/don_quijote.pdf']);
         $librosUpdated += DB::table('libros')->where('titulo', '1984')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776197/bookheaven/libros/pdfs/bookheaven/libros/pdfs/1.pdf']);
-        $librosUpdated += DB::table('libros')->where('titulo', 'El Se\u00f1or de los Anillos')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776224/bookheaven/libros/pdfs/bookheaven/libros/pdfs/senor_anillos.pdf']);
+        $librosUpdated += DB::table('libros')->where('titulo', 'El Señor de los Anillos')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776224/bookheaven/libros/pdfs/bookheaven/libros/pdfs/senor_anillos.pdf']);
         $librosUpdated += DB::table('libros')->where('titulo', 'Harry Potter y la Piedra Filosofal')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776213/bookheaven/libros/pdfs/bookheaven/libros/pdfs/harry_potter.pdf']);
         $librosUpdated += DB::table('libros')->where('titulo', 'El Principito')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776222/bookheaven/libros/pdfs/bookheaven/libros/pdfs/principito.pdf']);
         $librosUpdated += DB::table('libros')->where('titulo', 'Crimen y castigo')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776200/bookheaven/libros/pdfs/bookheaven/libros/pdfs/crimen_castigo.pdf']);
@@ -276,7 +276,7 @@ Route::get('/admin/update-pdf-urls-quick', function () {
             'message' => 'URLs de PDFs actualizadas correctamente',
             'libros_updated' => $librosUpdated,
             'mangas_updated' => $mangasUpdated,
-           'comics_updated' => $comicsUpdated
+            'comics_updated' => $comicsUpdated
         ]);
     } catch (\Exception $e) {
         return response()->json([
