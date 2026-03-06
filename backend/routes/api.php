@@ -506,5 +506,59 @@ Route::get('/admin/check-kristofer', function () {
     }
 });
 
+// Ruta para actualizar URLs de PDFs a Cloudinary (EJECUTAR UNA VEZ EN PRODUCCIÓN)
+Route::get('/admin/update-cloudinary-urls', function () {
+    try {
+        $updates = [
+            'libros' => [
+                ['titulo' => 'El Principito', 'pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776222/bookheaven/libros/pdfs/bookheaven/libros/pdfs/principito.pdf'],
+                ['titulo' => 'Cien años de soledad', 'pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776197/bookheaven/libros/pdfs/bookheaven/libros/pdfs/1.pdf'],
+                ['titulo' => 'Don Quijote de la Mancha', 'pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776203/bookheaven/libros/pdfs/bookheaven/libros/pdfs/don_quijote.pdf'],
+                ['titulo' => '1984', 'pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776197/bookheaven/libros/pdfs/bookheaven/libros/pdfs/1.pdf'],
+                ['titulo' => 'El Señor de los Anillos', 'pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776224/bookheaven/libros/pdfs/bookheaven/libros/pdfs/senor_anillos.pdf'],
+                ['titulo' => 'Harry Potter y la Piedra Filosofal', 'pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776213/bookheaven/libros/pdfs/bookheaven/libros/pdfs/harry_potter.pdf'],
+            ],
+        ];
+        
+        $results = [
+            'libros_updated' => 0,
+            'libros_not_found' => [],
+            'details' => []
+        ];
+        
+        foreach ($updates['libros'] as $update) {
+            $libro = \App\Models\Libro::where('titulo', $update['titulo'])->first();
+            
+            if ($libro) {
+                $oldPdf = $libro->pdf;
+                $libro->pdf = $update['pdf'];
+                $libro->save();
+                
+                $results['libros_updated']++;
+                $results['details'][] = [
+                    'titulo' => $libro->titulo,
+                    'old_pdf' => $oldPdf,
+                    'new_pdf' => $libro->pdf,
+                    'status' => 'updated'
+                ];
+            } else {
+                $results['libros_not_found'][] = $update['titulo'];
+            }
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'URLs de Cloudinary actualizadas',
+            'results' => $results
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+});
+
 
 
