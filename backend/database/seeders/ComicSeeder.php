@@ -26,7 +26,7 @@ class ComicSeeder extends Seeder
                 'titulo' => 'The Sandman',
                 'descripcion' => 'Morpheus, el Rey de los Sueños, escapa de su cautiverio y reconstruye su reino caído.',
                 'autor' => 'Neil Gaiman',
-                'imagen' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776387/bookheaven/comics/imagenes/bookheaven/comics/imagenes/watch.png',
+                'imagen' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776387/bookheaven/comics/imagenes/bookheaven/comics/imagenes/sand.png',
                 'pdf' => null,
                 'genero' => 'Fantasía Oscura',
                 'is_premium' => true,

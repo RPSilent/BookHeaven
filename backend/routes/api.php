@@ -344,5 +344,30 @@ Route::get('/admin/test-pdf-update', function () {
     }
 });
 
+// Ruta temporal para corregir imagen de Sandman (REMOVER DESPUES DE USAR)
+Route::get('/admin/fix-sandman-image', function () {
+    try {
+        $sandman = \App\Models\Comic::where('titulo', 'The Sandman')->first();
+        if ($sandman) {
+            $sandman->imagen = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776387/bookheaven/comics/imagenes/bookheaven/comics/imagenes/sand.png';
+            $sandman->save();
+            return response()->json([
+                'success' => true,
+                'message' => 'Imagen de Sandman actualizada correctamente',
+                'comic' => $sandman
+            ]);
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'Sandman no encontrado'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});
+
 
 
