@@ -164,15 +164,17 @@ class RolePermissionSeeder extends Seeder
         }
 
         // Crear usuario admin de prueba si no existe
-        if (!User::where('email', 'admin@test.com')->exists()) {
-            $admin = User::create([
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@test.com'],
+            [
                 'name' => 'Administrador',
-                'email' => 'admin@test.com',
                 'password' => Hash::make('admin123456'),
                 'role_id' => $adminRole->id,
                 'is_active' => true,
                 'email_verified_at' => now(),
-            ]);
+            ]
+        );
+        if ($admin->wasRecentlyCreated) {
             $this->command->line('✅ Usuario admin creado: admin@test.com / admin123456');
         }
 

@@ -55,17 +55,19 @@ class DashboardAnalyticsSeeder extends Seeder
         
         for ($i = 0; $i < $standardsToCreate; $i++) {
             $timestamp = time() . $i;
-            $usuario = User::create([
-                'name' => "Usuario Standard " . ($startIdx + $i),
-                'email' => "standard_" . $timestamp . "@test.com",
-                'password' => Hash::make('password123'),
-                'role_id' => $standardRole->id,
-                'is_active' => true,
-                'email_verified_at' => now(),
-                'date_of_birth' => Carbon::now()->subYears(rand(18, 60))->subMonths(rand(0, 11))->subDays(rand(0, 28)),
-                'gender' => $generos[array_rand($generos)],
-                'country' => $paises[array_rand($paises)],
-            ]);
+            $usuario = User::firstOrCreate(
+                ['email' => "standard_" . $timestamp . "@test.com"],
+                [
+                    'name' => "Usuario Standard " . ($startIdx + $i),
+                    'password' => Hash::make('password123'),
+                    'role_id' => $standardRole->id,
+                    'is_active' => true,
+                    'email_verified_at' => now(),
+                    'date_of_birth' => Carbon::now()->subYears(rand(18, 60))->subMonths(rand(0, 11))->subDays(rand(0, 28)),
+                    'gender' => $generos[array_rand($generos)],
+                    'country' => $paises[array_rand($paises)],
+                ]
+            );
             $usuariosStandard[] = $usuario;
         }
 
@@ -76,18 +78,20 @@ class DashboardAnalyticsSeeder extends Seeder
         
         for ($i = 0; $i < $premiumsToCreate; $i++) {
             $timestamp = time() . $i;
-            $usuario = User::create([
-                'name' => "Usuario Premium " . ($startPremiumIdx + $i),
-                'email' => "premium_" . $timestamp . "@test.com",
-                'password' => Hash::make('password123'),
-                'role_id' => $premiumRole->id,
-                'is_active' => true,
-                'email_verified_at' => now(),
-                'date_of_birth' => Carbon::now()->subYears(rand(18, 60))->subMonths(rand(0, 11))->subDays(rand(0, 28)),
-                'gender' => $generos[array_rand($generos)],
-                'country' => $paises[array_rand($paises)],
-                'premium_expires_at' => now()->addMonths(12),
-            ]);
+            $usuario = User::firstOrCreate(
+                ['email' => "premium_" . $timestamp . "@test.com"],
+                [
+                    'name' => "Usuario Premium " . ($startPremiumIdx + $i),
+                    'password' => Hash::make('password123'),
+                    'role_id' => $premiumRole->id,
+                    'is_active' => true,
+                    'email_verified_at' => now(),
+                    'date_of_birth' => Carbon::now()->subYears(rand(18, 60))->subMonths(rand(0, 11))->subDays(rand(0, 28)),
+                    'gender' => $generos[array_rand($generos)],
+                    'country' => $paises[array_rand($paises)],
+                    'premium_expires_at' => now()->addMonths(12),
+                ]
+            );
             $usuariosPremium[] = $usuario;
         }
 

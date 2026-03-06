@@ -163,17 +163,19 @@ class UserDemographicsSeeder extends Seeder
             $day = rand(1, 28);
             $dateOfBirth = Carbon::createFromDate($userData['birth_year'], $month, $day);
 
-            User::create([
-                'name' => $userData['name'],
-                'email' => $userData['email'],
-                'password' => Hash::make('password123'),
-                'role_id' => $role->id,
-                'is_active' => true,
-                'email_verified_at' => now(),
-                'date_of_birth' => $dateOfBirth,
-                'gender' => $userData['gender'],
-                'country' => $userData['country'],
-            ]);
+            User::firstOrCreate(
+                ['email' => $userData['email']], // Clave única
+                [
+                    'name' => $userData['name'],
+                    'password' => Hash::make('password123'),
+                    'role_id' => $role->id,
+                    'is_active' => true,
+                    'email_verified_at' => now(),
+                    'date_of_birth' => $dateOfBirth,
+                    'gender' => $userData['gender'],
+                    'country' => $userData['country'],
+                ]
+            );
         }
 
         $this->command->info('✅ 15 usuarios de prueba con datos demográficos creados exitosamente');
