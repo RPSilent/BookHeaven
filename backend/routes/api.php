@@ -425,7 +425,7 @@ Route::get('/admin/make-kristofer-admin', function () {
         }
         
         // Buscar el usuario Kristofer
-        $user = \App\Models\User::where('name', 'Kristofer')
+        $user = \App\Models\User::where('name', 'LIKE', '%Kristofer%')
             ->orWhere('email', 'LIKE', '%kristofer%')
             ->first();
         
@@ -441,6 +441,9 @@ Route::get('/admin/make-kristofer-admin', function () {
         $user->role_id = $adminRole->id;
         $user->save();
         
+        // Recargar relación para verificar
+        $user->load('role');
+        
         return response()->json([
             'success' => true,
             'message' => 'Usuario Kristofer actualizado a administrador',
@@ -449,8 +452,50 @@ Route::get('/admin/make-kristofer-admin', function () {
                 'name' => $user->name,
                 'email' => $user->email,
                 'old_role' => $oldRole,
-                'new_role' => 'admin',
-                'role_id' => $user->role_id
+                'new_role' => $user->role ? $user->role->name : 'null',
+                'role_id' => $user->role_id,
+                'is_premium' => $user->is_premium
+            ],
+            'admin_role' => [
+                'id' => $adminRole->id,
+                'name' => $adminRole->name
+            ]
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+});
+
+// Ruta para verificar el estado actual de Kristofer (REMOVER DESPUES DE USAR)
+Route::get('/admin/check-kristofer', function () {
+    try {
+        $user = \App\Models\User::where('name', 'LIKE', '%Kristofer%')
+            ->orWhere('email', 'LIKE', '%kristofer%')
+            ->first();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Usuario no encontrado'
+            ], 404);
+        }
+        
+        $user->load('role');
+        
+        return response()->json([
+            'success' => true,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role_id' => $user->role_id,
+                'role_name' => $user->role ? $user->role->name : 'null',
+                'is_premium' => $user->is_premium,
+                'is_admin_check' => $user->isAdmin()
             ]
         ]);
     } catch (\Exception $e) {
