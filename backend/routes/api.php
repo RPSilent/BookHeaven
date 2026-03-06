@@ -219,5 +219,23 @@ Route::get('/admin/reseed-content', function () {
     }
 })->name('admin.reseed.content');
 
+// Ruta temporal para actualizar URLs de PDFs (REMOVER DESPUES DE USAR)
+Route::get('/admin/update-pdf-urls', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('content:update-pdfs');
+        $output = \Illuminate\Support\Facades\Artisan::output();
+        return response()->json([
+            'success' => true,
+            'message' => 'URLs de PDFs actualizadas correctamente',
+            'output' => $output
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+})->name('admin.update.pdfs');
+
 
 
