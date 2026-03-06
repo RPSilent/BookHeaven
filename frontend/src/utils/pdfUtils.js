@@ -158,23 +158,24 @@ export const openPDF = async (options) => {
       };
     }
 
-    // Verificar si la respuesta es JSON (URL externa como Cloudinary)
+    // Verificar si la respuesta es JSON (URL externa) o PDF blob
     const contentType = response.headers.get("content-type");
+    
     if (contentType && contentType.includes("application/json")) {
+      // Es una URL externa (Cloudinary)
       const data = await response.json();
-
-      // Si el backend devuelve una URL externa (Cloudinary)
       if (data.success && data.type === "url" && data.url) {
+        // Abrir directamente la URL de Cloudinary
         if (newWindow) {
           newWindow.location.href = data.url;
         } else {
           window.open(data.url, "_blank");
         }
-        return { success: true, external: true };
+        return { success: true, type: "external", url: data.url };
       }
     }
 
-    // Si es un PDF local (blob), proceder con descarga
+    // Si es un PDF blob (archivo local), procesarlo como antes
     const blob = await response.blob();
 
     // Crear URL temporal
@@ -267,25 +268,21 @@ export const downloadPDF = async (options) => {
       };
     }
 
-    // Verificar si la respuesta es JSON (URL externa como Cloudinary)
+    // Verificar si la respuesta es JSON (URL externa) o PDF blob
     const contentType = response.headers.get("content-type");
+    
     if (contentType && contentType.includes("application/json")) {
+      // Es una URL externa (Cloudinary)
       const data = await response.json();
-
-      // Si el backend devuelve una URL externa (Cloudinary), descargar directamente
       if (data.success && data.type === "url" && data.url) {
-        const link = document.createElement("a");
-        link.href = data.url;
-        link.download = fileName;
-        link.target = "_blank";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        return { success: true, external: true };
+        // Para descargar desde Cloudinary, abrir en nueva pestaña
+        // (el navegador decidirá si descarga o abre según configuración)
+        window.open(data.url, "_blank");
+        return { success: true, type: "external", url: data.url };
       }
     }
 
-    // Obtener el Blob del PDF (para archivos locales)
+    // Obtener el Blob del PDF (archivo local)
     const blob = await response.blob();
 
     // Crear enlace temporal y descargar
