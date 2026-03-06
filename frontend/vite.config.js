@@ -15,22 +15,24 @@ export default defineConfig(({ mode }) => ({
       },
     }),
     // OPTIMIZACIÓN: Compresión solo en desarrollo (Vercel ya comprime en producción)
-    ...(mode !== 'production' ? [
-      compression({
-        verbose: false,
-        disable: false,
-        threshold: 5120,
-        algorithm: "gzip",
-        ext: ".gz",
-      }),
-      compression({
-        verbose: false,
-        disable: false,
-        threshold: 5120,
-        algorithm: "brotli",
-        ext: ".br",
-      }),
-    ] : []),
+    ...(mode !== "production"
+      ? [
+          compression({
+            verbose: false,
+            disable: false,
+            threshold: 5120,
+            algorithm: "gzip",
+            ext: ".gz",
+          }),
+          compression({
+            verbose: false,
+            disable: false,
+            threshold: 5120,
+            algorithm: "brotli",
+            ext: ".br",
+          }),
+        ]
+      : []),
   ],
   server: {
     host: true, // Permite acceso desde otros dispositivos en la misma red (como el celular)
