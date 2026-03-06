@@ -422,7 +422,14 @@ function BookRow({
                                                         className="bookRow__action-btn pdf"
                                                         onClick={(e) => {
                                                             e.stopPropagation()
-                                                            onOpenBook && onOpenBook(book)
+                                                            console.log('[BookRow] Abrir button clicked, book:', book);
+                                                            console.log('[BookRow] onOpenBook exists?', !!onOpenBook);
+                                                            if (onOpenBook) {
+                                                                console.log('[BookRow] Calling onOpenBook with book:', book);
+                                                                onOpenBook(book);
+                                                            } else {
+                                                                console.error('[BookRow] onOpenBook is not defined!');
+                                                            }
                                                         }}
                                                         title="Ver Contenido"
                                                     >

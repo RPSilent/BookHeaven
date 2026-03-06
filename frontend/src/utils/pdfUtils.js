@@ -24,6 +24,7 @@ export const getPdfServiceUrl = (type, id) => {
  * @returns {Promise<Object>} - {success: boolean, error?: string, code?: string, ...}
  */
 export const openPDF = async (options) => {
+  console.log("[pdfUtils] openPDF called with options:", options);
   const { content, type, id, navigateOnly = false } = options;
 
   if (!content && (!type || !id)) {
@@ -61,7 +62,9 @@ export const openPDF = async (options) => {
   }
 
   // Comportamiento original si no es navigateOnly
+  console.log("[pdfUtils] Opening new window...");
   const newWindow = window.open("", "_blank");
+  console.log("[pdfUtils] New window opened:", !!newWindow);
 
   if (newWindow) {
     newWindow.document.write(`
@@ -109,8 +112,8 @@ export const openPDF = async (options) => {
 
   try {
     const pdfUrl = getPdfServiceUrl(type, id);
-    console.log('[PDF] Requesting PDF from:', pdfUrl);
-    console.log('[PDF] Content type:', type, 'ID:', id);
+    console.log("[PDF] Requesting PDF from:", pdfUrl);
+    console.log("[PDF] Content type:", type, "ID:", id);
 
     // Hacer la solicitud para obtener el PDF
     const response = await fetch(pdfUrl, {

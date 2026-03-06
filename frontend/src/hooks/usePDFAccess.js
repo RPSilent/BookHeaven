@@ -34,7 +34,9 @@ export const usePDFAccess = () => {
   }, []);
 
   const handleOpenPDF = useCallback(async (options) => {
+    console.log("[usePDFAccess] handleOpenPDF called with options:", options);
     const result = await openPDF(options);
+    console.log("[usePDFAccess] openPDF result:", result);
 
     if (!result.success) {
       if (result.code === "NOT_AUTHENTICATED") {

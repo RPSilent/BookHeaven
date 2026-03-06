@@ -139,14 +139,19 @@ function Home({ onOpenLogin, addToast }) {
     }
 
     const handleOpenPDF = async (item) => {
+        console.log('[HomeNew] handleOpenPDF called with item:', item);
         const displayType = item.type || item.contentType || 'content'
         const displayTitle = item.title || item.titulo || 'Documento'
+        console.log('[HomeNew] displayType:', displayType, 'displayTitle:', displayTitle, 'id:', item.id);
+        
         const result = await handleOpenPDFWithGate({
             type: displayType,
             id: item.id,
             title: displayTitle,
         })
 
+        console.log('[HomeNew] Result from handleOpenPDFWithGate:', result);
+        
         if (result?.success) {
             if (addToast) addToast(`Abriendo ${displayTitle}...`, 'success')
         } else if (result?.code === 'NOT_AUTHENTICATED' || result?.code === 'REQUIRES_PREMIUM') {
