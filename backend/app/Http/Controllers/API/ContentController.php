@@ -348,14 +348,34 @@ class ContentController
         // Si el PDF es una URL externa (Cloudinary), descargar y servir el archivo
         if (filter_var($model->pdf, FILTER_VALIDATE_URL)) {
             try {
-                // Descargar el PDF de Cloudinary
-                $pdfContent = file_get_contents($model->pdf);
+                // Configurar contexto HTTP con credenciales de Cloudinary si están disponibles
+                $cloudinaryUrl = env('CLOUDINARY_URL');
+                
+                if ($cloudinaryUrl) {
+                    // Parsear credenciales de CLOUDINARY_URL
+                    // Formato: cloudinary://API_KEY:API_SECRET@CLOUD_NAME
+                    $parsed = parse_url($cloudinaryUrl);
+                    $apiKey = $parsed['user'] ?? null;
+                    $apiSecret = $parsed['pass'] ?? null;
+                    
+                    // Crear contexto con autenticación básica
+                    $context = stream_context_create([
+                        'http' => [
+                            'header' => "Authorization: Basic " . base64_encode("$apiKey:$apiSecret")
+                        ]
+                    ]);
+                    
+                    $pdfContent = @file_get_contents($model->pdf, false, $context);
+                } else {
+                    // Sin credenciales, intentar descarga simple
+                    $pdfContent = @file_get_contents($model->pdf);
+                }
                 
                 if ($pdfContent === false) {
                     return response()->json([
                         'success' => false,
                         'code' => 'DOWNLOAD_FAILED',
-                        'message' => 'No se pudo descargar el PDF de Cloudinary'
+                        'message' => 'No se pudo descargar el PDF de Cloudinary. Verifica las credenciales.'
                     ], 500);
                 }
                 
