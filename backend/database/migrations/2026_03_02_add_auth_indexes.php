@@ -13,17 +13,30 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Índices para búsquedas rápidas de autenticación
-            if (!Schema::hasColumn('users', 'email') || !$this->indexExists('users', 'email')) {
-                $table->index('email')->change(); // Búsquedas por email durante login
+            if (!$this->indexExists('users', 'email')) {
+                $table->index('email'); // Búsquedas por email durante login
             }
             
-            $table->index('role_id'); // Búsquedas por rol
-            $table->index('is_active'); // Búsquedas de usuarios activos
-            $table->index('email_verified_at'); // Búsquedas de usuarios verificados
-            $table->index('created_at'); // Ordenamiento por fecha de creación
+            if (!$this->indexExists('users', 'role_id')) {
+                $table->index('role_id'); // Búsquedas por rol
+            }
+            
+            if (!$this->indexExists('users', 'is_active')) {
+                $table->index('is_active'); // Búsquedas de usuarios activos
+            }
+            
+            if (!$this->indexExists('users', 'email_verified_at')) {
+                $table->index('email_verified_at'); // Búsquedas de usuarios verificados
+            }
+            
+            if (!$this->indexExists('users', 'created_at')) {
+                $table->index('created_at'); // Ordenamiento por fecha de creación
+            }
             
             // Índice compuesto para búsquedas comunes
-            $table->index(['is_active', 'role_id']); // Búsquedas de usuarios activos por rol
+            if (!$this->indexExists('users', ['is_active', 'role_id'])) {
+                $table->index(['is_active', 'role_id']); // Búsquedas de usuarios activos por rol
+            }
         });
 
         Schema::table('roles', function (Blueprint $table) {
