@@ -109,6 +109,8 @@ export const openPDF = async (options) => {
 
   try {
     const pdfUrl = getPdfServiceUrl(type, id);
+    console.log('[PDF] Requesting PDF from:', pdfUrl);
+    console.log('[PDF] Content type:', type, 'ID:', id);
 
     // Hacer la solicitud para obtener el PDF
     const response = await fetch(pdfUrl, {
@@ -160,11 +162,16 @@ export const openPDF = async (options) => {
 
     // Verificar si la respuesta es JSON (URL externa) o PDF blob
     const contentType = response.headers.get("content-type");
+    console.log("[PDF] Content-Type:", contentType);
+    console.log("[PDF] Response status:", response.status);
 
     if (contentType && contentType.includes("application/json")) {
       // Es una URL externa (Cloudinary)
       const data = await response.json();
+      console.log("[PDF] JSON Response:", data);
+
       if (data.success && data.type === "url" && data.url) {
+        console.log("[PDF] Opening Cloudinary URL:", data.url);
         // Abrir directamente la URL de Cloudinary
         if (newWindow) {
           newWindow.location.href = data.url;
