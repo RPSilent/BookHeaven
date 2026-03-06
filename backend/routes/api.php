@@ -286,15 +286,22 @@ Route::get('/admin/update-pdf-urls-quick', function () {
         ], 500);
     }
 })->name('admin.update.pdfs.quick');
-// Ruta de prueba simple
+// Ruta de prueba simple con Eloquent
 Route::get('/admin/test-pdf-update', function () {
     try {
-        $result = DB::table('libros')->where('titulo', 'El Principito')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776222/bookheaven/libros/pdfs/bookheaven/libros/pdfs/principito.pdf']);
-        
+        $libro = \App\Models\Libro::where('titulo', 'El Principito')->first();
+        if ($libro) {
+         $libro->pdf = 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776222/bookheaven/libros/pdfs/bookheaven/libros/pdfs/principito.pdf';
+            $libro->save();
+            return response()->json([
+                'success' => true,
+                'message' => 'PDF actualizado',
+                'libro' => $libro
+            ]);
+        }
         return response()->json([
-            'success' => true,
-            'affected_rows' => $result,
-            'libro' => DB::table('libros')->where('titulo', 'El Principito')->first()
+            'success' => false,
+            'message' => 'Libro no encontrado'
         ]);
     } catch (\Exception $e) {
         return response()->json([
