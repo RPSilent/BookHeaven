@@ -1,7 +1,7 @@
 /**
  * Utility functions for PDF handling
  * Ahora con soporte para detección de contenido premium
- * Updated: Force Vercel redeploy - 2026-03-06
+ * Updated: Force Vercel redeploy - 2026-03-06 16:45 (JSON parse fix)
  */
 
 /**
@@ -25,7 +25,7 @@ export const getPdfServiceUrl = (type, id) => {
  * @returns {Promise<Object>} - {success: boolean, error?: string, code?: string, ...}
  */
 export const openPDF = async (options) => {
-  console.log("[pdfUtils] openPDF called with options:", options);
+  console.log("🔵 [pdfUtils v2024-03-06] openPDF called with options:", options);
   const { content, type, id, navigateOnly = false } = options;
 
   if (!content && (!type || !id)) {
