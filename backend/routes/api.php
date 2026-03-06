@@ -245,31 +245,64 @@ Route::get('/admin/update-pdf-urls-quick', function () {
         $mangasUpdated = 0;
         $comicsUpdated = 0;
         
-        // Actualizar libros
-        $librosUpdated += DB::table('libros')->where('titulo', 'Cien años de soledad')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776197/bookheaven/libros/pdfs/bookheaven/libros/pdfs/1.pdf']);
-        $librosUpdated += DB::table('libros')->where('titulo', 'Don Quijote de la Mancha')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776203/bookheaven/libros/pdfs/bookheaven/libros/pdfs/don_quijote.pdf']);
-        $librosUpdated += DB::table('libros')->where('titulo', '1984')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776197/bookheaven/libros/pdfs/bookheaven/libros/pdfs/1.pdf']);
-        $librosUpdated += DB::table('libros')->where('titulo', 'El Señor de los Anillos')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776224/bookheaven/libros/pdfs/bookheaven/libros/pdfs/senor_anillos.pdf']);
-        $librosUpdated += DB::table('libros')->where('titulo', 'Harry Potter y la Piedra Filosofal')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776213/bookheaven/libros/pdfs/bookheaven/libros/pdfs/harry_potter.pdf']);
-        $librosUpdated += DB::table('libros')->where('titulo', 'El Principito')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776222/bookheaven/libros/pdfs/bookheaven/libros/pdfs/principito.pdf']);
-        $librosUpdated += DB::table('libros')->where('titulo', 'Crimen y castigo')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776200/bookheaven/libros/pdfs/bookheaven/libros/pdfs/crimen_castigo.pdf']);
-        $librosUpdated += DB::table('libros')->where('titulo', 'La metamorfosis')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776215/bookheaven/libros/pdfs/bookheaven/libros/pdfs/metamorfosis.pdf']);
-        $librosUpdated += DB::table('libros')->where('titulo', 'Orgullo y prejuicio')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776217/bookheaven/libros/pdfs/bookheaven/libros/pdfs/orgullo_prejuicio.pdf']);
+        // Actualizar libros con Eloquent
+        $libros = [
+            'Cien años de soledad' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776197/bookheaven/libros/pdfs/bookheaven/libros/pdfs/1.pdf',
+            'Don Quijote de la Mancha' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776203/bookheaven/libros/pdfs/bookheaven/libros/pdfs/don_quijote.pdf',
+            '1984' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776197/bookheaven/libros/pdfs/bookheaven/libros/pdfs/1.pdf',
+            'El Señor de los Anillos' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776224/bookheaven/libros/pdfs/bookheaven/libros/pdfs/senor_anillos.pdf',
+            'Harry Potter y la Piedra Filosofal' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776213/bookheaven/libros/pdfs/bookheaven/libros/pdfs/harry_potter.pdf',
+            'El Principito' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776222/bookheaven/libros/pdfs/bookheaven/libros/pdfs/principito.pdf',
+            'Crimen y castigo' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776200/bookheaven/libros/pdfs/bookheaven/libros/pdfs/crimen_castigo.pdf',
+            'La metamorfosis' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776215/bookheaven/libros/pdfs/bookheaven/libros/pdfs/metamorfosis.pdf',
+            'Orgullo y prejuicio' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776217/bookheaven/libros/pdfs/bookheaven/libros/pdfs/orgullo_prejuicio.pdf',
+        ];
         
-        // Actualizar mangas
-        $mangasUpdated += DB::table('mangas')->where('titulo', 'Naruto')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776271/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/Naruto.pdf']);
-        $mangasUpdated += DB::table('mangas')->where('titulo', 'One Piece')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776277/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/one.pdf']);
-        $mangasUpdated += DB::table('mangas')->where('titulo', 'Death Note')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776268/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/death.pdf']);
-        $mangasUpdated += DB::table('mangas')->where('titulo', 'Blue Lock')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776264/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/blue_lock.pdf']);
-        $mangasUpdated += DB::table('mangas')->where('titulo', 'Demon Slayer')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776245/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/demon_slayer.pdf']);
-        $mangasUpdated += DB::table('mangas')->where('titulo', 'Attack on Titan')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776247/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/attack.pdf']);
+        foreach ($libros as $titulo => $pdfUrl) {
+            $libro = \App\Models\Libro::where('titulo', $titulo)->first();
+            if ($libro) {
+                $libro->pdf = $pdfUrl;
+                $libro->save();
+                $librosUpdated++;
+            }
+        }
         
-        // Actualizar comics
-        $comicsUpdated += DB::table('comics')->where('titulo', 'Watchmen')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776423/bookheaven/comics/pdfs/bookheaven/comics/pdfs/watchmen.pdf']);
-        $comicsUpdated += DB::table('comics')->where('titulo', 'Batman: The Killing Joke')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776396/bookheaven/comics/pdfs/bookheaven/comics/pdfs/batman_dark_knight.pdf']);
-        $comicsUpdated += DB::table('comics')->where('titulo', 'Maus')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776403/bookheaven/comics/pdfs/bookheaven/comics/pdfs/maus.pdf']);
-        $comicsUpdated += DB::table('comics')->where('titulo', 'V de Vendetta')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776419/bookheaven/comics/pdfs/bookheaven/comics/pdfs/v_vendetta.pdf']);
-        $comicsUpdated += DB::table('comics')->where('titulo', 'the amazing spiderman')->update(['pdf' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776400/bookheaven/comics/pdfs/bookheaven/comics/pdfs/spiderman_kraven.pdf']);
+        // Actualizar mangas con Eloquent
+        $mangas = [
+            'Naruto' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776271/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/Naruto.pdf',
+            'One Piece' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776277/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/one.pdf',
+            'Death Note' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776268/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/death.pdf',
+            'Blue Lock' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776264/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/blue_lock.pdf',
+            'Demon Slayer' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776245/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/demon_slayer.pdf',
+            'Attack on Titan' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776247/bookheaven/mangas/pdfs/bookheaven/mangas/pdfs/attack.pdf',
+        ];
+        
+        foreach ($mangas as $titulo => $pdfUrl) {
+            $manga = \App\Models\Manga::where('titulo', $titulo)->first();
+            if ($manga) {
+                $manga->pdf = $pdfUrl;
+                $manga->save();
+                $mangasUpdated++;
+            }
+        }
+        
+        // Actualizar comics con Eloquent
+        $comics = [
+            'Watchmen' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776423/bookheaven/comics/pdfs/bookheaven/comics/pdfs/watchmen.pdf',
+            'Batman: The Killing Joke' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776396/bookheaven/comics/pdfs/bookheaven/comics/pdfs/batman_dark_knight.pdf',
+            'Maus' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776403/bookheaven/comics/pdfs/bookheaven/comics/pdfs/maus.pdf',
+            'V de Vendetta' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776419/bookheaven/comics/pdfs/bookheaven/comics/pdfs/v_vendetta.pdf',
+            'the amazing spiderman' => 'https://res.cloudinary.com/dnorihcmw/image/upload/v1772776400/bookheaven/comics/pdfs/bookheaven/comics/pdfs/spiderman_kraven.pdf',
+        ];
+        
+        foreach ($comics as $titulo => $pdfUrl) {
+            $comic = \App\Models\Comic::where('titulo', $titulo)->first();
+            if ($comic) {
+                $comic->pdf = $pdfUrl;
+                $comic->save();
+                $comicsUpdated++;
+            }
+        }
         
         return response()->json([
             'success' => true,
