@@ -344,9 +344,14 @@ class ContentController
             ], 404);
         }
 
-        // Si el PDF es una URL externa (Cloudinary), redirigir
+        // Si el PDF es una URL externa (Cloudinary), devolver la URL en JSON
         if (filter_var($model->pdf, FILTER_VALIDATE_URL)) {
-            return redirect($model->pdf);
+            return response()->json([
+                'success' => true,
+                'type' => 'url',
+                'url' => $model->pdf,
+                'message' => 'Redirigir a URL externa',
+            ]);
         }
 
         // Si es una ruta local, servir desde storage

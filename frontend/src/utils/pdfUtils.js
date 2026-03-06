@@ -158,7 +158,23 @@ export const openPDF = async (options) => {
       };
     }
 
-    // Obtener el Blob del PDF
+    // Verificar si la respuesta es JSON (URL externa como Cloudinary)
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const data = await response.json();
+
+      // Si el backend devuelve una URL externa (Cloudinary)
+      if (data.success && data.type === "url" && data.url) {
+        if (newWindow) {
+          newWindow.location.href = data.url;
+        } else {
+          window.open(data.url, "_blank");
+        }
+        return { success: true, external: true };
+      }
+    }
+
+    // Si es un PDF local (blob), proceder con descarga
     const blob = await response.blob();
 
     // Crear URL temporal
@@ -251,7 +267,25 @@ export const downloadPDF = async (options) => {
       };
     }
 
-    // Obtener el Blob del PDF
+    // Verificar si la respuesta es JSON (URL externa como Cloudinary)
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const data = await response.json();
+
+      // Si el backend devuelve una URL externa (Cloudinary), descargar directamente
+      if (data.success && data.type === "url" && data.url) {
+        const link = document.createElement("a");
+        link.href = data.url;
+        link.download = fileName;
+        link.target = "_blank";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return { success: true, external: true };
+      }
+    }
+
+    // Obtener el Blob del PDF (para archivos locales)
     const blob = await response.blob();
 
     // Crear enlace temporal y descargar
