@@ -345,44 +345,55 @@ class ContentController
             ], 404);
         }
 
-        // Si el PDF es una URL externa (Cloudinary), descargar y servir el archivo
+        // Si el PDF es una URL externa (Cloudinary), generar URL firmada o servir directamente
         if (filter_var($model->pdf, FILTER_VALIDATE_URL)) {
             try {
-                // Configurar contexto HTTP con credenciales de Cloudinary si están disponibles
+                // Intentar usar el SDK de Cloudinary si está disponible
                 $cloudinaryUrl = env('CLOUDINARY_URL');
                 
-                if ($cloudinaryUrl) {
-                    // Parsear credenciales de CLOUDINARY_URL
-                    // Formato: cloudinary://API_KEY:API_SECRET@CLOUD_NAME
-                    $parsed = parse_url($cloudinaryUrl);
-                    $apiKey = $parsed['user'] ?? null;
-                    $apiSecret = $parsed['pass'] ?? null;
+                if ($cloudinaryUrl && class_exists('\Cloudinary\Cloudinary')) {
+                    putenv("CLOUDINARY_URL=$cloudinaryUrl");
+                    $cloudinary = new \Cloudinary\Cloudinary();
                     
-                    // Crear contexto con autenticación básica
-                    $context = stream_context_create([
-                        'http' => [
-                            'header' => "Authorization: Basic " . base64_encode("$apiKey:$apiSecret")
-                        ]
-                    ]);
+                    // Extraer public_id de la URL
+                    // URL formato: https://res.cloudinary.com/{cloud_name}/image/upload/v{version}/{public_id}.pdf
+                    preg_match('/upload\/v\d+\/(.+)\.pdf$/', $model->pdf, $matches);
+                    $publicId = $matches[1] ?? null;
                     
-                    $pdfContent = @file_get_contents($model->pdf, false, $context);
+                    if ($publicId) {
+                        // Generar URL firmada (válida por 1 hora)
+                        $signedUrl = $cloudinary->uploadApi()->url($publicId, [
+                            'resource_type' => 'raw',
+                            'type' => 'upload',
+                            'sign_url' => true,
+                            'expiration' => time() + 3600 // 1 hora
+                        ]);
+                        
+                        // Intentar descargar con la URL firmada
+                        $pdfContent = @file_get_contents($signedUrl);
+                    } else {
+                        // Si no podemos extraer el public_id, intentar descarga directa
+                        $pdfContent = @file_get_contents($model->pdf);
+                    }
                 } else {
-                    // Sin credenciales, intentar descarga simple
+                    // Sin SDK de Cloudinary, intentar descarga directa
                     $pdfContent = @file_get_contents($model->pdf);
                 }
                 
-                if ($pdfContent === false) {
+                if ($pdfContent === false || empty($pdfContent)) {
                     return response()->json([
                         'success' => false,
                         'code' => 'DOWNLOAD_FAILED',
-                        'message' => 'No se pudo descargar el PDF de Cloudinary. Verifica las credenciales.'
+                        'message' => 'No se pudo descargar el PDF de Cloudinary. Los PDFs deben ser públicos o usar URLs firmadas.',
+                        'help' => 'Ve a Cloudinary Console > Media Library > busca el PDF > Make Public'
                     ], 500);
                 }
                 
                 // Servir el PDF directamente
                 return response($pdfContent)
                     ->header('Content-Type', 'application/pdf')
-                    ->header('Content-Disposition', 'inline; filename="' . basename($model->pdf) . '"');
+                    ->header('Content-Disposition', 'inline; filename="' . basename($model->pdf) . '"')
+                    ->header('Content-Length', strlen($pdfContent));
                     
             } catch (\Exception $e) {
                 Log::error('Error downloading PDF from Cloudinary: ' . $e->getMessage());
