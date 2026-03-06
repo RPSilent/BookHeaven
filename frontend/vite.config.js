@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import compression from "vite-plugin-compression";
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     react({
       jsxImportSource: "react",
@@ -14,21 +14,23 @@ export default defineConfig({
         compact: true,
       },
     }),
-    // OPTIMIZACIÓN: Compresión de assets con gzip y brotli
-    compression({
-      verbose: false,
-      disable: false,
-      threshold: 5120, // Reducido de 10240 para mejor compresión
-      algorithm: "gzip",
-      ext: ".gz",
-    }),
-    compression({
-      verbose: false,
-      disable: false,
-      threshold: 5120,
-      algorithm: "brotli",
-      ext: ".br",
-    }),
+    // OPTIMIZACIÓN: Compresión solo en desarrollo (Vercel ya comprime en producción)
+    ...(mode !== 'production' ? [
+      compression({
+        verbose: false,
+        disable: false,
+        threshold: 5120,
+        algorithm: "gzip",
+        ext: ".gz",
+      }),
+      compression({
+        verbose: false,
+        disable: false,
+        threshold: 5120,
+        algorithm: "brotli",
+        ext: ".br",
+      }),
+    ] : []),
   ],
   server: {
     host: true, // Permite acceso desde otros dispositivos en la misma red (como el celular)
@@ -117,4 +119,4 @@ export default defineConfig({
   },
   // OPTIMIZACIÓN: Configuración de caché
   cacheDir: ".vite",
-});
+}));
