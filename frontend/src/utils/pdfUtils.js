@@ -1,6 +1,7 @@
 /**
  * Utility functions for PDF handling
  * Ahora con soporte para detección de contenido premium
+ * Updated: Force Vercel redeploy - 2026-03-06
  */
 
 /**
