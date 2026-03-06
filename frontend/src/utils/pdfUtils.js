@@ -168,11 +168,19 @@ export const openPDF = async (options) => {
     const contentType = response.headers.get("content-type");
     console.log("[PDF] Content-Type:", contentType);
     console.log("[PDF] Response status:", response.status);
+    console.log("[PDF] All headers:", Array.from(response.headers.entries()));
 
-    if (contentType && contentType.includes("application/json")) {
-      // Es una URL externa (Cloudinary)
-      const data = await response.json();
-      console.log("[PDF] JSON Response:", data);
+    // SIEMPRE intentar parsear como JSON primero para URLs de Cloudinary
+    const responseText = await response.text();
+    console.log(
+      "[PDF] Response text (first 500 chars):",
+      responseText.substring(0, 500),
+    );
+
+    // Intentar parsear como JSON
+    try {
+      const data = JSON.parse(responseText);
+      console.log("[PDF] Successfully parsed as JSON:", data);
 
       if (data.success && data.type === "url" && data.url) {
         console.log("[PDF] Opening Cloudinary URL:", data.url);
@@ -184,26 +192,31 @@ export const openPDF = async (options) => {
         }
         return { success: true, type: "external", url: data.url };
       }
+    } catch (jsonError) {
+      console.log(
+        "[PDF] Not JSON, treating as blob. Error:",
+        jsonError.message,
+      );
+      // Si no es JSON, es un PDF blob
+      const blob = new Blob([responseText], { type: "application/pdf" });
+
+      // Crear URL temporal
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      if (newWindow) {
+        newWindow.location.href = blobUrl;
+      } else {
+        window.open(blobUrl, "_blank");
+      }
+
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
+      return { success: true };
     }
 
-    // Si es un PDF blob (archivo local), procesarlo como antes
-    const blob = await response.blob();
-
-    // Crear URL temporal
-    const blobUrl = window.URL.createObjectURL(blob);
-
-    if (newWindow) {
-      newWindow.location.href = blobUrl;
-    } else {
-      // Fallback if window failed to open (unlikely if called from click)
-      window.open(blobUrl, "_blank");
-    }
-
-    // Limpiar la URL después de un tiempo
-    // Note: tricky with new window, but we rely on browser handling
-    setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
-
-    return { success: true };
+    // Si llegamos aquí, el JSON no tenía la estructura esperada
+    console.error("[PDF] JSON response but unexpected structure");
+    if (newWindow) newWindow.close();
+    return { success: false, error: "Respuesta inesperada del servidor" };
   } catch (error) {
     if (newWindow) newWindow.close();
     console.error("Error opening PDF:", error);
