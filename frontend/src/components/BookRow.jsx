@@ -37,6 +37,7 @@ function BookRow({
     const booksList = Array.isArray(Books) ? Books : []
     const listRef = useRef(null)
     const containerRef = useRef(null)
+    const listAreaRef = useRef(null)
     const autoPlayRef = useRef(null)
     const dragStartX = useRef(0)
     const dragStartTime = useRef(0)
@@ -71,9 +72,9 @@ function BookRow({
     // Calculate visible items and width based on viewport
     useEffect(() => {
         const calculateDimensions = () => {
-            if (!containerRef.current) return
+            if (!listAreaRef.current) return
 
-            const containerWidth = containerRef.current.offsetWidth
+            const containerWidth = listAreaRef.current.offsetWidth
             // Ensure minimum itemWidth
             const newItemWidth = Math.max(
                 containerWidth < 480 ? 120 : containerWidth < 768 ? 150 : 200,
@@ -95,53 +96,44 @@ function BookRow({
 
     // Calculate max scroll based on actual container width
     const calculateMaxScroll = useCallback(() => {
-        if (!containerRef.current) return 0
-        const itemWidthWithGap = itemWidth + 14
-        const totalItems = booksList.length + 1 // +1 for create button
-        const totalWidth = totalItems * itemWidthWithGap
-        const containerWidth = containerRef.current.offsetWidth
-        // Ensure last item is visible and not leaving blank space
-        return Math.max(-(totalWidth - containerWidth), -(itemWidthWithGap * 2))
-    }, [itemWidth, booksList.length])
+        if (!listRef.current || !listAreaRef.current) return 0
+        
+        const listWidth = listRef.current.scrollWidth
+        const containerWidth = listAreaRef.current.offsetWidth
+        
+        // maxScroll es el máximo negativo (cuando todo está scrolleado a la derecha)
+        const maxScroll = Math.min(0, -(listWidth - containerWidth))
+        
+        return maxScroll
+    }, [])
 
     // Optimized scroll handlers
     const handleLeftArrow = useCallback(() => {
-        if (!listRef.current || booksList.length === 0) return
+        if (!listRef.current || !listAreaRef.current) return
 
-        const itemWidthWithGap = itemWidth + 14 // 14px gap between items
-        const maxScroll = 0
-        let newScrollX = scrollX + (visibleItems * itemWidthWithGap)
-
-        if (infiniteScroll && newScrollX > 0) {
-            // Loop to end
-            const minScroll = calculateMaxScroll()
-            newScrollX = minScroll
-        } else {
-            newScrollX = Math.min(newScrollX, maxScroll)
-        }
+        const containerWidth = listAreaRef.current.offsetWidth
+        const scrollStep = containerWidth * 0.75 // Desplazarse 75% del ancho visible
+        
+        let newScrollX = scrollX + scrollStep
+        newScrollX = Math.min(newScrollX, 0) // No pasar de 0 (inicio)
 
         setScrollX(newScrollX)
         listRef.current.style.transform = `translateX(${newScrollX}px)`
-    }, [scrollX, visibleItems, itemWidth, booksList.length, infiniteScroll, calculateMaxScroll])
+    }, [scrollX])
 
     const handleRightArrow = useCallback(() => {
-        if (!listRef.current || booksList.length === 0) return
+        if (!listRef.current || !listAreaRef.current) return
 
-        const itemWidthWithGap = itemWidth + 14 // 14px gap between items
         const maxScroll = calculateMaxScroll()
+        const containerWidth = listAreaRef.current.offsetWidth
+        const scrollStep = containerWidth * 0.75 // Desplazarse 75% del ancho visible
 
-        let newScrollX = scrollX - (visibleItems * itemWidthWithGap)
-
-        if (infiniteScroll && newScrollX < maxScroll) {
-            // Loop to beginning
-            newScrollX = 0
-        } else {
-            newScrollX = Math.max(newScrollX, maxScroll)
-        }
+        let newScrollX = scrollX - scrollStep
+        newScrollX = Math.max(newScrollX, maxScroll) // No pasar del máximo scroll
 
         setScrollX(newScrollX)
         listRef.current.style.transform = `translateX(${newScrollX}px)`
-    }, [scrollX, visibleItems, itemWidth, booksList.length, infiniteScroll, calculateMaxScroll])
+    }, [scrollX, calculateMaxScroll])
 
     // Auto-play functionality
     useEffect(() => {
@@ -293,7 +285,7 @@ function BookRow({
                 </div>
             </div>
 
-            <div className="bookRow__listarea">
+            <div className="bookRow__listarea" ref={listAreaRef}>
                 {showLeftArrow && (
                     <button
                         className="bookRow__nav bookRow__nav--left"

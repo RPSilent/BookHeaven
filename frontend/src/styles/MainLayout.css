@@ -34,7 +34,7 @@
     background: linear-gradient(135deg, #141414 0%, #1e1914 100%);
     color: var(--color-text-primary);
     font-family: 'Inter', sans-serif;
-    overflow: hidden; /* Previene scroll en el contenedor padre */
+    overflow: hidden; /* Contenedor de trabajo - clip de contenido externo */
 }
 
 /* ===== SIDEBAR ===== */
