@@ -38,7 +38,7 @@
 - **Perfil Premium:** Suscripción y pagos incluidos
 - **Mi Lista (Favoritos):** Organización de lecturas futuras
 - **Reseñas Sociales:** Valoraciones y comentarios comunitarios
-- **Lector Integrado:** 
+- **Lector Integrado:**
   - Visor PDF con mejoras
   - Reproductor de audio
 - **Perfil Personalizado:** Foto, biografía y preferencias
@@ -46,11 +46,10 @@
 
 ### Para Administradores
 
-- **Dashboard Analytics:** 
+- **Dashboard Analytics:**
   - Análisis demográfico avanzado (género, edad, país)
   - Métricas de contenido y usuarios
   - Actividad en tiempo real
-  
 - **Gestión de Contenido:** CRUD de todas las categorías
 - **Gestión de Usuarios:** Asignación de roles y permisos
 - **Auditoría:** Logs completos de actividades
@@ -91,7 +90,7 @@ BookHeaven/
 
 ### Requisitos
 
-- Node.js 18+ 
+- Node.js 18+
 - PHP 8.2+
 - MySQL 5.7+
 - Composer
@@ -174,12 +173,14 @@ VITE_API_URL=http://localhost:8000/api  # Desarrollo
 ## 📡 Endpoints API Principales
 
 ### Autenticación
+
 - `POST /api/auth/register` - Registro
 - `POST /api/auth/login` - Login
 - `POST /api/auth/logout` - Logout
 - `GET /api/auth/me` - Usuario actual
 
 ### Contenido
+
 - `GET /api/libros` - Listar libros
 - `GET /api/mangas` - Listar mangas
 - `GET /api/comics` - Listar cómics
@@ -188,12 +189,14 @@ VITE_API_URL=http://localhost:8000/api  # Desarrollo
 - `PUT /api/content/{id}` - Editar (Admin)
 
 ### Favoritos & Reseñas
+
 - `GET /api/favorites` - Mi lista
 - `POST /api/favorites` - Agregar favorito
 - `GET /api/reviews/{contentId}` - Reseñas
 - `POST /api/reviews` - Crear reseña
 
 ### Admin
+
 - `GET /api/admin/analytics` - Analytics
 - `GET /api/admin/users` - Usuarios
 - `GET /api/admin/activities` - Logs
@@ -208,6 +211,7 @@ VITE_API_URL=http://localhost:8000/api  # Desarrollo
 **Pasos:**
 
 1. **Preparar archivos:**
+
 ```bash
 cd backend
 composer install --no-dev
@@ -224,6 +228,7 @@ npm run build
    - Crear symlink: `public_html/storage` → `public_html/api/storage/app/public`
 
 3. **Configurar servidor:**
+
 ```bash
 cd public_html/api
 cp .env.example .env  # Editar con credenciales reales
@@ -232,12 +237,13 @@ php artisan storage:link
 ```
 
 4. **Apache Configuration (.htaccess):**
+
 ```apache
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{HTTPS} off
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-    
+
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [QSA,L]
@@ -250,14 +256,14 @@ php artisan storage:link
 
 ### Tablas Principales
 
-| Tabla | Propósito |
-|-------|-----------|
-| `users` | Usuarios del sistema |
-| `libros`, `mangas`, `comics`, `audiobooks` | Contenido |
-| `favorites` | Favoritos por usuario |
-| `reviews` | Reseñas y valoraciones |
-| `activity_logs` | Auditoría |
-| `roles`, `permissions` | Control de acceso |
+| Tabla                                      | Propósito              |
+| ------------------------------------------ | ---------------------- |
+| `users`                                    | Usuarios del sistema   |
+| `libros`, `mangas`, `comics`, `audiobooks` | Contenido              |
+| `favorites`                                | Favoritos por usuario  |
+| `reviews`                                  | Reseñas y valoraciones |
+| `activity_logs`                            | Auditoría              |
+| `roles`, `permissions`                     | Control de acceso      |
 
 ---
 
@@ -298,6 +304,7 @@ npm run test
 ## 📝 Cambios Recientes (v1.0)
 
 **13 de Marzo, 2026**
+
 - ✅ Migración GitHub a RPSilent/BookHeaven
 - ✅ README completamente actualizado
 - ✅ Limpieza de archivos innecesarios
