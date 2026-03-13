@@ -42,7 +42,19 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('auth_token', newToken);
             setToken(newToken);
             setUser(newUser);
-            return response.data;
+            
+            // Traer el user actualizado del backend con el rol completo
+            let completeUser = newUser;
+            try {
+                const meResponse = await authAPI.getMe();
+                completeUser = meResponse.data.user;
+                setUser(completeUser);
+            } catch (err) {
+                console.error('Error refreshing user data:', err);
+            }
+            
+            // Retornar el usuario con el rol completo
+            return { ...response.data, user: completeUser };
         } catch (err) {
             setError(err.response?.data?.message || 'Error al registrar');
             throw err;
@@ -58,7 +70,19 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('auth_token', newToken);
             setToken(newToken);
             setUser(newUser);
-            return response.data;
+            
+            // Traer el user actualizado del backend con el rol completo
+            let completeUser = newUser;
+            try {
+                const meResponse = await authAPI.getMe();
+                completeUser = meResponse.data.user;
+                setUser(completeUser);
+            } catch (err) {
+                console.error('Error refreshing user data:', err);
+            }
+            
+            // Retornar el usuario con el rol completo
+            return { ...response.data, user: completeUser };
         } catch (err) {
             setError(err.response?.data?.message || 'Error al iniciar sesión');
             throw err;

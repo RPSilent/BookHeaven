@@ -12,12 +12,6 @@ function Header({ isScrolled, isMobileMenuOpen, setIsMobileMenuOpen, onOpenLogin
     const profileMenuRef = useRef(null)
     const navigate = useNavigate()
 
-    // Forzar actualización cuando cambia el usuario (especialmente importante después del login)
-    useEffect(() => {
-        // Este efecto simplemente "observa" los cambios del user para asegurar re-renders
-        // Se ejecuta cada vez que user cambia, forzando la actualización del Header
-    }, [user])
-
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
@@ -110,10 +104,16 @@ function Header({ isScrolled, isMobileMenuOpen, setIsMobileMenuOpen, onOpenLogin
                                 onClick={handleProfileClick}
                             >
                                 <div className="header__avatar-wrapper">
-                                    <img src={user.profile_photo_url || "https://ui-avatars.com/api/?name=" + user.name} alt="Perfil" />
+                                    <img src={user?.profile_photo_url || "https://ui-avatars.com/api/?name=" + user?.name} alt="Perfil" />
                                     {isPremium() && <span className="header__avatar-badge">✦</span>}
+                                    {isAdmin() && <span className="header__avatar-badge" style={{background: '#ff6b6b'}}>A</span>}
                                 </div>
-                                <span className="header__username">{user.name.split(' ')[0]}</span>
+                                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px'}}>
+                                    <span className="header__username">{user?.name?.split(' ')[0]}</span>
+                                    <span style={{fontSize: '11px', fontWeight: 'bold', color: isAdmin() ? '#ff6b6b' : isPremium() ? '#ffd700' : '#888'}}>
+                                        {isAdmin() ? '👨‍💼 Admin' : isPremium() ? '✦ Premium' : '👤 Usuario'}
+                                    </span>
+                                </div>
                                 <svg className={`header__chevron ${showProfileMenu ? 'open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none">
                                     <path d="M7 10L12 15L17 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                                 </svg>
@@ -123,13 +123,13 @@ function Header({ isScrolled, isMobileMenuOpen, setIsMobileMenuOpen, onOpenLogin
                                 <div className="header__profile-menu">
                                     <div className="profile-menu__header">
                                         <div className="profile-menu__avatar">
-                                            <img src={user.profile_photo_url || "https://ui-avatars.com/api/?name=" + user.name} alt="Perfil" />
+                                            <img src={user?.profile_photo_url || "https://ui-avatars.com/api/?name=" + user?.name} alt="Perfil" />
                                         </div>
                                         <div>
-                                            <p className="profile-menu__name">{user.name}</p>
-                                            <p className="profile-menu__email">{user.email}</p>
+                                            <p className="profile-menu__name">{user?.name}</p>
+                                            <p className="profile-menu__email">{user?.email}</p>
                                             <div className="profile-menu__badges">
-                                                {isAdmin() && <span className="badge badge-admin">Admin</span>}
+                                                {isAdmin() && <span className="badge badge-admin">👨‍💼 Admin</span>}
                                                 {isPremium() && <span className="badge badge-premium">✦ Premium</span>}
                                             </div>
                                         </div>

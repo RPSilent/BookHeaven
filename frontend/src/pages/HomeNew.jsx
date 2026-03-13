@@ -126,7 +126,11 @@ function Home({ onOpenLogin, addToast }) {
 
             if (addToast) addToast(`${displayTitle} eliminado`, 'success')
             setConfirmModal({ isOpen: false, id: null, type: null, item: null })
-            fetchContent()
+            
+            // Recargar la página para mostrar cambios inmediatamente
+            setTimeout(() => {
+                window.location.reload()
+            }, 300)
         } catch (err) {
             console.error(err)
             if (addToast) addToast('Error al eliminar', 'error')

@@ -92,11 +92,23 @@ function App() {
     const handleLogin = async (email, password) => {
         try {
             const response = await login(email, password)
-            // Pequeño delay para asegurar que el context se actualiza y los componentes se re-renderizan
-            await new Promise(resolve => setTimeout(resolve, 100))
+            // Esperar más tiempo para asegurar que React procese la actualización del estado
+            await new Promise(resolve => setTimeout(resolve, 250))
             setShowLoginModal(false)
+            
             const userName = response?.user?.name || 'Usuario'
-            addToast(`¡Bienvenido ${userName}!`, 'success')
+            const userRole = response?.user?.role?.name || 'usuario'
+            const displayRole = userRole === 'admin' ? '👨‍💼 Admin' : userRole === 'premium' ? '✦ Premium' : '👤 Usuario'
+            
+            addToast(`¡Bienvenido ${userName}! (${displayRole})`, 'success')
+            
+            // Navegar al dashboard si es admin, si no al home
+            const isAdminUser = userRole === 'admin'
+            if (isAdminUser) {
+                navigate('/dashboard')
+            } else {
+                navigate('/')
+            }
         } catch (error) {
             console.error(error)
             addToast(error.response?.data?.message || 'Error al iniciar sesión', 'error')
@@ -107,11 +119,18 @@ function App() {
     const handleRegister = async (data) => {
         try {
             const response = await register(data)
-            // Pequeño delay para asegurar que el context se actualiza y los componentes se re-renderizan
-            await new Promise(resolve => setTimeout(resolve, 100))
+            // Esperar más tiempo para asegurar que React procese la actualización del estado
+            await new Promise(resolve => setTimeout(resolve, 250))
             setShowRegisterModal(false)
+            
             const userName = response?.user?.name || 'Usuario'
-            addToast(`¡Bienvenido ${userName}!`, 'success')
+            const userRole = response?.user?.role?.name || 'usuario'
+            const displayRole = userRole === 'admin' ? '👨‍💼 Admin' : userRole === 'premium' ? '✦ Premium' : '👤 Usuario'
+            
+            addToast(`¡Bienvenido ${userName}! (${displayRole})`, 'success')
+            
+            // Navegar al home después del registro
+            navigate('/')
         } catch (error) {
             addToast(error.response?.data?.message || 'Error al registrarse', 'error')
             throw error

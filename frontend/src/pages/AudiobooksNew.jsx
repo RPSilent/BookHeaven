@@ -149,22 +149,17 @@ function Audiobooks({ addToast }) {
             console.log('🗑️ Eliminando audiobook:', itemToDelete.id)
             await contentAPI.deleteAudiobook(itemToDelete.id)
             
-            // Remover de la lista
-            setAudiobooks(prev => prev.filter(a => a.id !== itemToDelete.id))
-            
-            // Remover de favoritos si estaba allí
-            if (isInLibrary(itemToDelete.id, 'audiobook')) {
-                console.log('📚 Removiendo de biblioteca:', itemToDelete.id)
-                // Nota: removeFromLibrary se maneja en el contexto
-            }
-            
             console.log('✅ Audiobook eliminado exitosamente')
             if (addToast) addToast(`"${itemToDelete.title || itemToDelete.titulo}" eliminado`, 'success')
+            
+            // Recargar la página para mostrar cambios inmediatamente
+            setTimeout(() => {
+                window.location.reload()
+            }, 300)
         } catch (err) {
             const errorMsg = err.response?.data?.message || 'Error al eliminar el audiolibro'
             console.error('❌ Error al eliminar:', err)
             if (addToast) addToast(errorMsg, 'error')
-        } finally {
             setIsDeleting(false)
             setDeleteConfirmOpen(false)
             setItemToDelete(null)

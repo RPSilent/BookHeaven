@@ -93,6 +93,17 @@ function BookRow({
         return () => window.removeEventListener('resize', debouncedResize)
     }, [])
 
+    // Calculate max scroll based on actual container width
+    const calculateMaxScroll = useCallback(() => {
+        if (!containerRef.current) return 0
+        const itemWidthWithGap = itemWidth + 14
+        const totalItems = booksList.length + 1 // +1 for create button
+        const totalWidth = totalItems * itemWidthWithGap
+        const containerWidth = containerRef.current.offsetWidth
+        // Ensure last item is visible and not leaving blank space
+        return Math.max(-(totalWidth - containerWidth), -(itemWidthWithGap * 2))
+    }, [itemWidth, booksList.length])
+
     // Optimized scroll handlers
     const handleLeftArrow = useCallback(() => {
         if (!listRef.current || booksList.length === 0) return
@@ -103,23 +114,21 @@ function BookRow({
 
         if (infiniteScroll && newScrollX > 0) {
             // Loop to end
-            const totalWidth = (booksList.length + 1) * itemWidthWithGap // +1 for create button
-            newScrollX = -(totalWidth - window.innerWidth + 100)
+            const minScroll = calculateMaxScroll()
+            newScrollX = minScroll
         } else {
             newScrollX = Math.min(newScrollX, maxScroll)
         }
 
         setScrollX(newScrollX)
         listRef.current.style.transform = `translateX(${newScrollX}px)`
-    }, [scrollX, visibleItems, itemWidth, booksList.length, infiniteScroll])
+    }, [scrollX, visibleItems, itemWidth, booksList.length, infiniteScroll, calculateMaxScroll])
 
     const handleRightArrow = useCallback(() => {
         if (!listRef.current || booksList.length === 0) return
 
         const itemWidthWithGap = itemWidth + 14 // 14px gap between items
-        const totalItems = booksList.length + 1 // +1 for create button
-        const totalWidth = totalItems * itemWidthWithGap
-        const maxScroll = -(totalWidth - window.innerWidth + 100)
+        const maxScroll = calculateMaxScroll()
 
         let newScrollX = scrollX - (visibleItems * itemWidthWithGap)
 
@@ -132,7 +141,7 @@ function BookRow({
 
         setScrollX(newScrollX)
         listRef.current.style.transform = `translateX(${newScrollX}px)`
-    }, [scrollX, visibleItems, itemWidth, booksList.length, infiniteScroll])
+    }, [scrollX, visibleItems, itemWidth, booksList.length, infiniteScroll, calculateMaxScroll])
 
     // Auto-play functionality
     useEffect(() => {
@@ -164,7 +173,11 @@ function BookRow({
 
         const x = e.pageX - listRef.current.offsetLeft
         const walk = (x - dragStartX.current) * 1.5
-        const newScrollX = scrollLeft + walk
+        let newScrollX = scrollLeft + walk
+
+        // Apply scroll boundaries to prevent over-scrolling
+        const maxScroll = calculateMaxScroll()
+        newScrollX = Math.max(maxScroll, Math.min(0, newScrollX))
 
         setScrollX(newScrollX)
         listRef.current.style.transform = `translateX(${newScrollX}px)`
@@ -189,10 +202,8 @@ function BookRow({
             newScrollX = scrollX - (remainder * direction)
         }
 
-        // Apply boundaries
-        const totalItems = booksList.length + 1 // +1 for create button
-        const totalWidth = totalItems * itemWidthWithGap
-        const maxScroll = -(totalWidth - window.innerWidth + 100)
+        // Apply boundaries using calculated max scroll
+        const maxScroll = calculateMaxScroll()
         newScrollX = Math.max(maxScroll, Math.min(0, newScrollX))
 
         setScrollX(newScrollX)

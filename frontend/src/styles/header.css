@@ -779,28 +779,73 @@
 
 @media (max-width: 900px) {
     .header__nav { gap: 2px; }
-    .header__nav a { padding: 7px 10px; font-size: 13.5px; }
+    .header__nav a { padding: 6px 8px; font-size: 13.5px; }
     .header__search-label { display: none; }
-    .header__search { padding: 10px; border-radius: 50%; }
+    .header__search { padding: 10px; border-radius: 50%; width: 44px; height: 44px; }
+    .header__left { gap: 32px; }
 }
 
 @media (max-width: 768px) {
+    .header {
+        padding: 0;
+    }
+
+    .header__content {
+        padding: 10px 3%;
+        gap: 12px;
+    }
+
     .header__nav { display: none; }
     .header__mobile-menu { display: flex; }
     .header__search { display: none; }
-    .header__content { padding: 12px 4%; }
-    .header__left { gap: 20px; }
+    .header__left { gap: 12px; }
     .header__username { display: none; }
+    .header__logo { width: 48px; height: 48px; min-width: 48px; }
+    .header__logo-image { width: 48px; height: 48px; }
 
     .header__premium-btn span:last-child { display: none; }
-    .header__premium-btn { padding: 8px 12px; }
+    .header__premium-btn { padding: 8px 10px; font-size: 13px; }
 }
 
 @media (max-width: 480px) {
-    .header__content { padding: 11px 4%; }
+    .header__content {
+        padding: 9px 3%;
+        justify-content: space-between;
+    }
+
+    .header__left {
+        gap: 8px;
+        min-width: auto;
+    }
+
+    .header__logo { width: 44px; height: 44px; min-width: 44px; }
+    .header__logo-image { width: 44px; height: 44px; }
+    
     .header__auth-btn--login { display: none; }
     .header__avatar-wrapper img { width: 32px; height: 32px; }
     .header__avatar-wrapper { width: 32px; height: 32px; }
-    .header__logo-image { width: 44px; height: 44px; }
-    .header__logo { width: 44px; height: 44px; min-width: 44px; }
+    .header__premium-btn { padding: 7px 8px; font-size: 12px; }
+    .header__premium-btn span { display: none; }
+    .header__premium-btn::before { content: '👑'; margin-right: 3px; }
+    
+    .header__mobile-menu { width: 44px; height: 44px; }
+    .header__mobile-menu svg { width: 22px; height: 22px; }
+}
+
+@media (max-width: 360px) {
+    .header__content {
+        padding: 8px 2%;
+    }
+
+    .header__left {
+        gap: 6px;
+    }
+
+    .header__logo { width: 40px; height: 40px; min-width: 40px; }
+    .header__logo-image { width: 40px; height: 40px; }
+    
+    .header__avatar-wrapper { width: 28px; height: 28px; }
+    .header__avatar-wrapper img { width: 28px; height: 28px; }
+    
+    .header__premium-btn { padding: 6px 6px; font-size: 11px; }
 }

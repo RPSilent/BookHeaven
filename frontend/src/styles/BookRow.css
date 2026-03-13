@@ -544,36 +544,41 @@
 @media (max-width: 768px) {
     .bookRow {
         margin-bottom: 2rem;
-        padding-left: 4%;
+        padding-left: 3%;
+        padding-right: 3%;
     }
 
     .bookRow__title {
-        font-size: 1.2rem;
+        font-size: 1rem;
+        font-weight: 600;
     }
 
     .bookRow__header {
-        padding-right: 4%;
+        padding-right: 0;
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
         align-items: flex-start;
+        margin-bottom: 15px;
     }
 
     .bookRow__controls {
         opacity: 1;
         width: 100%;
         flex-wrap: wrap;
+        gap: 10px;
     }
 
     .bookRow__progress {
         width: 100%;
-        max-width: 300px;
+        max-width: 280px;
+        height: 3px;
     }
 
     .bookRow__list {
-        gap: 8px;
+        gap: 10px;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        padding: 10px 0 20px;
+        padding: 10px 0 20px 0;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         /* Firefox */
@@ -586,17 +591,22 @@
 
     .bookRow__item {
         scroll-snap-align: start;
-        min-width: 140px;
+        min-width: 160px;
         flex-shrink: 0;
     }
 
     .bookRow__item-container {
         aspect-ratio: 2/3;
+        border-radius: 4px;
     }
 
     .bookRow__item:hover {
         transform: none;
         z-index: 10;
+    }
+
+    .bookRow__item:active {
+        transform: scale(0.95);
     }
 
     .bookRow__nav {
@@ -610,42 +620,75 @@
 
 @media (max-width: 480px) {
     .bookRow {
-        margin-bottom: 1.5rem;
-        padding-left: 4%;
+        margin-bottom: 1.3rem;
+        padding-left: 3%;
+        padding-right: 3%;
     }
 
     .bookRow__title {
-        font-size: 1rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0;
     }
 
     .bookRow__header {
-        padding-right: 4%;
-        gap: 10px;
+        padding-right: 0;
+        gap: 8px;
+        margin-bottom: 12px;
     }
 
     .bookRow__progress {
         width: 100%;
-        max-width: 250px;
+        max-width: 220px;
+        height: 2px;
     }
 
     .bookRow__controls {
-        gap: 12px;
+        gap: 8px;
+        font-size: 0.85rem;
     }
 
     .bookRow__list {
-        gap: 6px;
+        gap: 8px;
         padding-bottom: 15px;
+        padding-top: 8px;
     }
 
     .bookRow__item {
-        min-width: 120px;
+        min-width: 140px;
+        flex-shrink: 0;
     }
 
     .bookRow__item-container {
         border-radius: 3px;
+        aspect-ratio: 2/3;
     }
 
     .bookRow__item img {
         border-radius: 3px;
+    }
+
+    .bookRow__item:active {
+        transform: scale(0.92);
+    }
+}
+
+@media (max-width: 360px) {
+    .bookRow {
+        margin-bottom: 1rem;
+        padding-left: 2%;
+        padding-right: 2%;
+    }
+
+    .bookRow__title {
+        font-size: 0.9rem;
+    }
+
+    .bookRow__list {
+        gap: 6px;
+    }
+
+    .bookRow__item {
+        min-width: 130px;
     }
 }

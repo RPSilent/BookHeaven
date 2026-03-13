@@ -7,6 +7,7 @@
 ## 🚀 Tecnologías Principales
 
 ### Backend
+
 - **Framework:** Laravel 12.x (PHP 8.2+)
 - **Autenticación:** Laravel Sanctum (Basada en Tokens)
 - **Base de Datos:** MySQL / MariaDB con optimización de índices.
@@ -14,6 +15,7 @@
 - **Reportes:** Generación de PDFs integrada.
 
 ### Frontend
+
 - **Framework:** React 19.x
 - **Build Tool:** Vite 7.x
 - **Estado Global:** Context API
@@ -26,6 +28,7 @@
 ## ✨ Características Principales
 
 ### Para Usuarios
+
 - **Catálogo Multiformato:** Exploración de libros, mangas, cómics y audiolibros.
 - **Perfil Premium:** Flujo de suscripción y pagos integrado.
 - **Mi Lista:** Sistema de favoritos para organizar lecturas futuras.
@@ -35,6 +38,7 @@
 - **Registro Detallado:** Captura de datos demográficos (país, género, fecha de nacimiento) para una experiencia personalizada.
 
 ### Para Administradores (Dashboard Analytics)
+
 - **Analíticas Demográficas:** Comparativas de lectura por:
   - Género (Hombres vs Mujeres vs Otros).
   - Rango de edad (13-18, 19-25, etc.).
@@ -50,11 +54,13 @@
 ## 🛠️ Instalación y Configuración
 
 ### 1. Clonar el repositorio
+
 ```bash
-git clone https://github.com/tu-usuario/bookheaven.git
+git clone https://github.com/RPSilent/BookHeaven.git
 ```
 
 ### 2. Configurar el Backend (Laravel)
+
 ```bash
 cd backend
 composer install
@@ -65,6 +71,7 @@ php artisan serve
 ```
 
 ### 3. Configurar el Frontend (React)
+
 ```bash
 cd frontend
 npm install
@@ -74,14 +81,52 @@ npm run dev
 ---
 
 ## 🛠️ Scripts de Optimización (Raíz)
+
 El proyecto incluye herramientas para mantenimiento y rendimiento:
+
 - `optimize-project.sh`: Optimización completa de assets y base de datos.
 - `validate-fixes.php`: Validador de consistencia de datos.
 - `verify-dashboard-setup.php`: Verifica que los endpoints de analíticas funcionen correctamente.
 
 ---
 
+## 🌐 Despliegue en Producción
+
+### 📦 Despliegue en Hostinger
+
+El proyecto incluye documentación completa y herramientas para facilitar el despliegue en Hostinger:
+
+#### 📚 Documentación
+
+- **[README_DESPLIEGUE.md](README_DESPLIEGUE.md)** - Guía rápida de inicio
+- **[HOSTINGER_DEPLOYMENT.md](HOSTINGER_DEPLOYMENT.md)** - Guía completa paso a paso
+- **[DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)** - Checklist de verificación
+- **[ARQUITECTURA_DESPLIEGUE.md](ARQUITECTURA_DESPLIEGUE.md)** - Diagramas y arquitectura
+
+#### 🔧 Herramientas Incluidas
+
+- **prepare-deploy.ps1** - Script PowerShell que prepara todo automáticamente
+- **backend/hostinger-setup.php** - Panel de configuración para ejecutar comandos Laravel sin SSH
+- **backend/.env.hostinger** - Plantilla de configuración para producción
+- **.htaccess-root** - Configuración Apache optimizada
+
+#### 🚀 Inicio Rápido
+
+```powershell
+# 1. Preparar archivos para subir
+.\prepare-deploy.ps1
+
+# 2. Sigue las instrucciones en README_DESPLIEGUE.md
+```
+
+### ☁️ Despliegue en Vercel (Frontend)
+
+Ver documentación: [VERCEL_SETUP.md](VERCEL_SETUP.md)
+
+---
+
 ## 📈 Próximas Mejoras (Roadmap)
+
 - [ ] **Lector PDF Pro:** Integración con PDF.js para modo nocturno y marcadores.
 - [ ] **Modo Offline (PWA):** Lectura sin conexión mediante Service Workers.
 - [ ] **Gamificación:** Sistema de logros y rachas de lectura.
@@ -91,4 +136,5 @@ El proyecto incluye herramientas para mantenimiento y rendimiento:
 ---
 
 ## 📝 Notas Recientes
+
 - Se corrigió la lógica de validación de edad y el formato de fecha de nacimiento (Día/Mes/Año) en los formularios de registro para mejorar la UX y la precisión de los datos demográficos.

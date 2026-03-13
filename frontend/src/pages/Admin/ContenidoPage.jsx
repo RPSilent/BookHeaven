@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext'
 import MainLayout from '../../components/dashboard/MainLayout'
 import ConfirmModal from '../../components/ConfirmModal'
 import EditContentModal from '../../components/EditContentModal'
+import CreateContentModal from '../../components/CreateContentModal'
 import { contentAPI } from '../../api/content'
 import { getImageUrl } from '../../utils/imageUtils'
 import StatCard from '../../components/dashboard/StatCard'
@@ -39,6 +40,10 @@ const ContenidoPage = () => {
         isOpen: false,
         content: null,
         contentType: null
+    })
+    const [createModal, setCreateModal] = useState({
+        isOpen: false,
+        contentType: 'libro'
     })
 
     useEffect(() => {
@@ -131,7 +136,11 @@ const ContenidoPage = () => {
             else if (type === 'audiobook') await contentAPI.deleteAudiobook(id)
 
             setConfirmModal({ isOpen: false, id: null, type: null })
-            fetchAllContent(true)
+            
+            // Recargar la página para mostrar cambios
+            setTimeout(() => {
+                window.location.reload()
+            }, 300)
         } catch (err) {
             console.error('Error deleting content:', err)
             setError(`Error al eliminar el ${type}`)
@@ -160,9 +169,29 @@ const ContenidoPage = () => {
     }
 
     const handleEditUpdate = () => {
-        // Actualizar contenido en lista y cerrar modal
-        fetchAllContent(true)
-        handleEditClose()
+        // Recargar página para mostrar cambios inmediatamente (consistente con DELETE)
+        setTimeout(() => {
+            window.location.reload()
+        }, 300)
+    }
+
+    const handleCreateClose = () => {
+        setCreateModal({
+            isOpen: false,
+            contentType: 'libro'
+        })
+    }
+
+    const handleCreateSuccess = () => {
+        // Actualizar contenido en lista y cerrar modal (reload se hace automáticamente en CreateContentModal)
+        handleCreateClose()
+    }
+
+    const handleOpenCreateModal = (contentType) => {
+        setCreateModal({
+            isOpen: true,
+            contentType: contentType
+        })
     }
 
     if (loading) {
@@ -214,6 +243,110 @@ const ContenidoPage = () => {
                             >
                                 🔄 Actualizar
                             </button>
+                            <div style={{ position: 'relative', display: 'inline-block' }}>
+                                <button
+                                    onClick={() => {
+                                        const menu = document.getElementById('create-menu')
+                                        menu.style.display = menu.style.display === 'none' ? 'block' : 'none'
+                                    }}
+                                    style={{
+                                        padding: '5px 12px',
+                                        background: '#D4A76A',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        color: '#1a1a1a',
+                                        cursor: 'pointer',
+                                        fontSize: '0.8rem',
+                                        fontWeight: 'bold'
+                                    }}
+                                    onMouseOver={(e) => e.currentTarget.style.opacity = '0.8'}
+                                    onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
+                                >
+                                    ➕ Crear
+                                </button>
+                                <div
+                                    id="create-menu"
+                                    style={{
+                                        display: 'none',
+                                        position: 'absolute',
+                                        right: 0,
+                                        top: '100%',
+                                        backgroundColor: '#2a2a2a',
+                                        minWidth: '140px',
+                                        boxShadow: '0 8px 16px rgba(0,0,0,0.3)',
+                                        zIndex: 1000,
+                                        borderRadius: '4px',
+                                        border: '1px solid #3a3530',
+                                        marginTop: '4px'
+                                    }}
+                                >
+                                    <button
+                                        onClick={() => {
+                                            handleOpenCreateModal('libro')
+                                            document.getElementById('create-menu').style.display = 'none'
+                                        }}
+                                        style={{
+                                            display: 'block',
+                                            width: '100%',
+                                            padding: '10px 15px',
+                                            border: 'none',
+                                            background: 'transparent',
+                                            color: '#D4A76A',
+                                            textAlign: 'left',
+                                            cursor: 'pointer',
+                                            fontSize: '0.9rem',
+                                            borderBottom: '1px solid #3a3530'
+                                        }}
+                                        onMouseOver={(e) => e.currentTarget.style.background = '#1f1f1f'}
+                                        onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                                    >
+                                        📖 Nuevo Libro
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            handleOpenCreateModal('manga')
+                                            document.getElementById('create-menu').style.display = 'none'
+                                        }}
+                                        style={{
+                                            display: 'block',
+                                            width: '100%',
+                                            padding: '10px 15px',
+                                            border: 'none',
+                                            background: 'transparent',
+                                            color: '#D4A76A',
+                                            textAlign: 'left',
+                                            cursor: 'pointer',
+                                            fontSize: '0.9rem',
+                                            borderBottom: '1px solid #3a3530'
+                                        }}
+                                        onMouseOver={(e) => e.currentTarget.style.background = '#1f1f1f'}
+                                        onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                                    >
+                                        🗯️ Nuevo Manga
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            handleOpenCreateModal('comic')
+                                            document.getElementById('create-menu').style.display = 'none'
+                                        }}
+                                        style={{
+                                            display: 'block',
+                                            width: '100%',
+                                            padding: '10px 15px',
+                                            border: 'none',
+                                            background: 'transparent',
+                                            color: '#D4A76A',
+                                            textAlign: 'left',
+                                            cursor: 'pointer',
+                                            fontSize: '0.9rem'
+                                        }}
+                                        onMouseOver={(e) => e.currentTarget.style.background = '#1f1f1f'}
+                                        onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                                    >
+                                        🦸 Nuevo Cómic
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -493,6 +626,13 @@ const ContenidoPage = () => {
                 onUpdate={handleEditUpdate}
                 content={editModal.content}
                 contentType={editModal.contentType}
+            />
+
+            <CreateContentModal
+                isOpen={createModal.isOpen}
+                contentType={createModal.contentType}
+                onClose={handleCreateClose}
+                onSuccess={handleCreateSuccess}
             />
         </MainLayout>
     )
