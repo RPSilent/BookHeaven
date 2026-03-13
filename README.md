@@ -80,48 +80,106 @@ npm run dev
 
 ---
 
-## 🛠️ Scripts de Optimización (Raíz)
+## 📁 Estructura del Proyecto
 
-El proyecto incluye herramientas para mantenimiento y rendimiento:
+```
+BookHeaven/
+├── backend/                 # API REST con Laravel 12
+│   ├── app/                # Código principal
+│   │   ├── Http/           # Controllers, Requests, Middleware
+│   │   ├── Models/         # Modelos Eloquent
+│   │   ├── Services/       # Lógica de negocio
+│   │   └── Jobs/           # Colas de trabajo
+│   ├── config/             # Configuración de aplicación
+│   ├── database/           # Migrations y Seeds
+│   ├── routes/             # Endpoints API
+│   ├── public/             # Punto de entrada público
+│   ├── hostinger-*.php     # Herramientas para Hostinger
+│   └── composer.json       # Dependencias PHP
+│
+├── frontend/               # Aplicación React + Vite
+│   ├── src/
+│   │   ├── api/           # Cliente HTTP (Axios)
+│   │   ├── components/    # Componentes React reutilizables
+│   │   ├── pages/         # Vistas completas
+│   │   ├── context/       # Estado global (AuthContext, etc)
+│   │   ├── styles/        # CSS y temas
+│   │   └── utils/         # Funciones de utilidad
+│   ├── public/            # Archivos estáticos
+│   └── package.json       # Dependencias JavaScript
+│
+└── README.md             # Este archivo
+```
 
-- `optimize-project.sh`: Optimización completa de assets y base de datos.
-- `validate-fixes.php`: Validador de consistencia de datos.
-- `verify-dashboard-setup.php`: Verifica que los endpoints de analíticas funcionen correctamente.
+---
+
+## 🛠️ Scripts de Utilidad (Backend)
+
+El proyecto incluye herramientas para mantenimiento, diagnóstico y configuración:
+
+### Herramientas de Hostinger
+
+- **`hostinger-setup.php`** - Panel web para ejecutar comandos Laravel sin acceso SSH
+- **`hostinger-migrate-safe.php`** - Migraciones seguras (alternativa a exec() deshabilitada)
+- **`hostinger-diagnose.php`** - Diagnóstico completo del servidor y configuración
+
+### Herramientas Auxiliares
+
+- **`create-storage-link-manual.php`** - Crear links de almacenamiento sin artisan
+- **`fix_paths.php`** - Corregir rutas de archivos y configuraciones
+- **`check-content.php`** - Validador de integridad de datos
+- **`verify_users.sql`** - Script SQL para verificación de usuarios
 
 ---
 
 ## 🌐 Despliegue en Producción
 
-### 📦 Despliegue en Hostinger
+### 📦 Despliegue en Hostinger (RECOMENDADO)
 
-El proyecto incluye documentación completa y herramientas para facilitar el despliegue en Hostinger:
+El proyecto está completamente optimizado para Hostinger con herramientas de configuración y migración integradas.
 
-#### 📚 Documentación
+#### 🚀 Configuración Rápida
 
-- **[README_DESPLIEGUE.md](README_DESPLIEGUE.md)** - Guía rápida de inicio
-- **[HOSTINGER_DEPLOYMENT.md](HOSTINGER_DEPLOYMENT.md)** - Guía completa paso a paso
-- **[DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)** - Checklist de verificación
-- **[ARQUITECTURA_DESPLIEGUE.md](ARQUITECTURA_DESPLIEGUE.md)** - Diagramas y arquitectura
+1. **Subir archivos al servidor:**
+   ```
+   public_html/ (Frontend React)
+   public_html/api/ (Backend Laravel)
+   ```
 
-#### 🔧 Herramientas Incluidas
+2. **Ejecutar configuración:**
+   - Accede a: `https://tudominio.com/api/hostinger-setup.php?password=tu_password`
+   - Ejecuta los comandos necesarios desde el panel web
 
-- **prepare-deploy.ps1** - Script PowerShell que prepara todo automáticamente
-- **backend/hostinger-setup.php** - Panel de configuración para ejecutar comandos Laravel sin SSH
-- **backend/.env.hostinger** - Plantilla de configuración para producción
-- **.htaccess-root** - Configuración Apache optimizada
+3. **Realizar migraciones:**
+   - Accede a: `https://tudominio.com/api/hostinger-migrate-safe.php?password=tu_password`
+   - Las migraciones se ejecutarán sin usar `exec()` (deshabilitado en Hostinger)
 
-#### 🚀 Inicio Rápido
+4. **Verificar diagnóstico:**
+   - Accede a: `https://tudominio.com/api/hostinger-diagnose.php?password=tu_password`
+   - Comprueba que todo esté correctamente configurado
 
-```powershell
-# 1. Preparar archivos para subir
-.\prepare-deploy.ps1
+#### ⚠️ Consideraciones de Seguridad
 
-# 2. Sigue las instrucciones en README_DESPLIEGUE.md
-```
+- **Cambiar contraseñas en los scripts:** Edita `hostinger-setup.php`, `hostinger-migrate-safe.php` y `hostinger-diagnose.php` para cambiar la contraseña por defecto (`cambiar_este_password_123`)
+- **Eliminar scripts después del despliegue:** Borra los archivos `.php` de configuración después de completar la instalación
+- **Proteger .env:** Asegúrate de que `.env` NO sea accesible desde la web
 
-### ☁️ Despliegue en Vercel (Frontend)
+---
 
-Ver documentación: [VERCEL_SETUP.md](VERCEL_SETUP.md)
+## � Cambios Recientes y Actualizaciones
+
+### v2.0.0 - Migración Completa a Hostinger (Marzo 2026)
+
+✅ **Implementado:**
+- Migración completa del proyecto desde Vercel a Hostinger
+- Adición de herramientas de configuración web (hostinger-setup.php, hostinger-migrate-safe.php)
+- Sistema de diagnóstico para identificar problemas de configuración
+- Scripts de utilidad para mantenimiento sin acceso SSH
+- Actualización del repositorio: Cuenta RPSilent/BookHeaven en GitHub
+- Optimización de rutas y almacenamiento para Hostinger
+- Validación de integridad de datos y usuarios
+
+**Nota:** Se han removido dependencias de Vercel. El proyecto está completamente orientado a Hostinger.
 
 ---
 
@@ -132,9 +190,6 @@ Ver documentación: [VERCEL_SETUP.md](VERCEL_SETUP.md)
 - [ ] **Gamificación:** Sistema de logros y rachas de lectura.
 - [ ] **Internacionalización:** Soporte completo para Inglés (en proceso).
 - [ ] **Notificaciones Push:** Alertas de nuevos lanzamientos y promociones.
+- [ ] **API GraphQL:** Alternativa a REST API para queries más eficientes.
 
 ---
-
-## 📝 Notas Recientes
-
-- Se corrigió la lógica de validación de edad y el formato de fecha de nacimiento (Día/Mes/Año) en los formularios de registro para mejorar la UX y la precisión de los datos demográficos.
