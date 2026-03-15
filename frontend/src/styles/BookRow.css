@@ -65,6 +65,8 @@
 .bookRow__listarea {
     position: relative;
     z-index: 2;
+    overflow: hidden;
+    width: 100%;
 }
 
 .bookRow__list {
@@ -576,12 +578,7 @@
 
     .bookRow__list {
         gap: 10px;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
         padding: 10px 0 20px 0;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        /* Firefox */
     }
 
     .bookRow__list::-webkit-scrollbar {
@@ -590,7 +587,6 @@
     }
 
     .bookRow__item {
-        scroll-snap-align: start;
         min-width: 160px;
         flex-shrink: 0;
     }
