@@ -172,8 +172,12 @@ export const AuthProvider = ({ children }) => {
                         id: item.id,
                         type: item.type,
                         titulo: item.titulo || item.title,
+                        title: item.title || item.titulo,
                         autor: item.autor || item.author,
-                        imagen: item.imagen || item.poster,
+                        author: item.author || item.autor,
+                        image_url: item.image_url || item.imagen || item.poster,
+                        imagen: item.image_url || item.imagen || item.poster,
+                        poster: item.image_url || item.imagen || item.poster,
                         addedAt: new Date().toISOString()
                     };
 
