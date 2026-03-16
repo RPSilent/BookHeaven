@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { contentAPI } from '../api/content'
 import { useAuth } from '../context/AuthContext'
+import { useReadingProgress } from '../hooks/useReadingProgress'
 import PremiumGateModal from '../components/PremiumGateModal'
 import ContentDetailsModal from '../components/ContentDetailsModal'
 import { adaptContentList } from '../utils/contentAdapter'
@@ -13,6 +14,7 @@ import '../styles/biblioteca-new.css'
 function Biblioteca({ addToast, onOpenLogin }) {
     const { user, canAccessPremium, isAdmin } = useAuth()
     const navigate = useNavigate()
+    const { getCurrentPage } = useReadingProgress()
     const {
         isPremiumGateOpen,
         premiumGateData,
@@ -115,8 +117,13 @@ function Biblioteca({ addToast, onOpenLogin }) {
         })
 
         if (result.success) {
-            navigate(`/reader/${item.type}/${item.id}`)
+            const currentPage = getCurrentPage(item.type, item.id)
+            navigate(`/reader/${item.type}/${item.id}?page=${currentPage}`)
             if (addToast) addToast(`Abriendo: ${item.title || item.titulo}`, 'success')
+        } else if (result.code === 'NOT_AUTHENTICATED' || result.code === 'REQUIRES_PREMIUM') {
+            // El modal premium se mostrará automáticamente
+        } else {
+            if (addToast) addToast('Error: No se pudo abrir el archivo', 'error')
         }
     }
 

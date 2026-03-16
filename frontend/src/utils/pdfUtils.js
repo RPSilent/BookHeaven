@@ -36,21 +36,30 @@ export const openPDF = async (options) => {
     try {
       const pdfUrl = getPdfServiceUrl(type, id);
       const response = await fetch(pdfUrl, {
-        method: "HEAD", // Solo validación de cabeceras
+        method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("auth_token") || ""}`,
+          Accept: "application/json",
         },
       });
 
       if (!response.ok) {
         if (response.status === 403) {
-          const errorData = await response.json();
-          return {
-            success: false,
-            error: errorData.message,
-            code: errorData.code,
-            contentTitle: errorData.content_title,
-          };
+          try {
+            const errorData = await response.json();
+            return {
+              success: false,
+              error: errorData.message,
+              code: errorData.code,
+              contentTitle: errorData.content_title,
+            };
+          } catch {
+            return {
+              success: false,
+              error: "Acceso denegado",
+              code: "REQUIRES_PREMIUM",
+            };
+          }
         }
         return { success: false, error: "Error de acceso" };
       }

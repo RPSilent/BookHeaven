@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useReadingProgress } from '../hooks/useReadingProgress'
+import { usePDFAccess } from '../hooks/usePDFAccess'
+import PremiumGateModal from '../components/PremiumGateModal'
 import { contentAPI } from '../api/content'
 import { getImageUrl } from '../utils/imageUtils'
 import '../styles/mi-lista-new.css'
 
-function MiLista({ addToast }) {
-    const { library, removeFromLibrary } = useAuth()
+function MiLista({ addToast, onOpenLogin }) {
+    const { library, removeFromLibrary, user } = useAuth()
     const navigate = useNavigate()
+    const { getCurrentPage } = useReadingProgress()
+    const { isPremiumGateOpen, premiumGateData, handleOpenPDF, closePremiumGate } = usePDFAccess()
     const [activeTab, setActiveTab] = useState('favoritos')
     const [lecturaActual, setLecturaActual] = useState([])
     const [loadingContinuando, setLoadingContinuando] = useState(true)
@@ -65,32 +70,21 @@ function MiLista({ addToast }) {
     }
 
     const handleAbrirLectura = async (item) => {
-        const token = localStorage.getItem('auth_token')
-        if (!token) {
-            if (addToast) addToast('Debes iniciar sesión para leer este contenido', 'info')
-            navigate('/')
-            return
-        }
+        const result = await handleOpenPDF({
+            type: item.type,
+            id: item.id,
+            title: item.title || item.titulo,
+            navigateOnly: true
+        })
 
-        // Verificar acceso antes de navegar al lector
-        try {
-            const url = `/api/content/serve-pdf/${item.type}/${item.id}`
-            const response = await fetch(url, {
-                method: 'HEAD',
-                headers: { 'Authorization': `Bearer ${token}` }
-            })
-
-            if (response.ok) {
-                navigate(`/reader/${item.type}/${item.id}`)
-            } else if (response.status === 403) {
-                if (addToast) addToast('Este contenido requiere suscripción Premium', 'info')
-                navigate('/')
-            } else {
-                navigate(`/reader/${item.type}/${item.id}`)
-            }
-        } catch {
-            // En caso de error de red, intentar navegar igualmente (el reader manejará el error)
-            navigate(`/reader/${item.type}/${item.id}`)
+        if (result.success) {
+            const currentPage = getCurrentPage(item.type, item.id)
+            navigate(`/reader/${item.type}/${item.id}?page=${currentPage}`)
+            if (addToast) addToast(`Abriendo: ${item.title || item.titulo}`, 'success')
+        } else if (result.code === 'NOT_AUTHENTICATED' || result.code === 'REQUIRES_PREMIUM') {
+            // El modal premium se mostrará automáticamente
+        } else {
+            if (addToast) addToast('Error: No se pudo abrir el archivo', 'error')
         }
     }
 
@@ -188,6 +182,16 @@ function MiLista({ addToast }) {
                     </div>
                 )}
             </div>
+
+            {/* Premium Gate Modal */}
+            <PremiumGateModal
+                isOpen={isPremiumGateOpen}
+                onClose={closePremiumGate}
+                onLoginClick={onOpenLogin}
+                userRole={user?.role?.name}
+                isUserAuthenticated={!!user}
+                contentTitle={premiumGateData.contentTitle}
+            />
         </div>
     )
 }
