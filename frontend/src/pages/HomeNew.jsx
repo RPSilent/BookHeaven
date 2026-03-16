@@ -8,6 +8,7 @@ import ConfirmModal from '../components/ConfirmModal'
 import PremiumGateModal from '../components/PremiumGateModal'
 import { contentAPI } from '../api/content'
 import { useAuth } from '../context/AuthContext'
+import { useReadingProgress } from '../hooks/useReadingProgress'
 import { adaptContentList } from '../utils/contentAdapter'
 import { usePDFAccess } from '../hooks/usePDFAccess'
 import { measurePerformance } from '../utils/performanceUtils'
@@ -16,6 +17,7 @@ import '../styles/home-new.css'
 function Home({ onOpenLogin, addToast }) {
     const { user, isAdmin, addToLibrary, isInLibrary } = useAuth()
     const navigate = useNavigate()
+    const { getCurrentPage } = useReadingProgress()
     const { isPremiumGateOpen, premiumGateData, handleOpenPDF: handleOpenPDFWithGate, closePremiumGate } = usePDFAccess()
     const [books, setBooks] = useState({ popular: [] })
     const [mangas, setMangas] = useState([])
@@ -149,9 +151,12 @@ function Home({ onOpenLogin, addToast }) {
             type: displayType,
             id: item.id,
             title: displayTitle,
+            navigateOnly: true
         })
 
         if (result?.success) {
+            const currentPage = getCurrentPage(displayType, item.id)
+            navigate(`/reader/${displayType}/${item.id}?page=${currentPage}`)
             if (addToast) addToast(`Abriendo ${displayTitle}...`, 'success')
         } else if (result?.code === 'NOT_AUTHENTICATED' || result?.code === 'REQUIRES_PREMIUM') {
             // El modal premium se mostrará automáticamente
