@@ -200,6 +200,31 @@
     box-shadow: 0 6px 20px var(--primary-color-30);
 }
 
+/* Info Button - Active State (En tu lista) */
+.hero__button--info.active {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #A6764F 100%);
+    color: var(--accent-color);
+}
+
+.hero__button--info.active:hover {
+    background: linear-gradient(135deg, #E8A84B 0%, var(--primary-color) 100%);
+}
+
+/* Premium Badge */
+.hero__premium {
+    display: inline-block;
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 13px;
+    border: 2px solid var(--primary-color);
+    padding: 4px 12px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, rgba(212, 167, 106, 0.15) 0%, rgba(212, 167, 106, 0.05) 100%);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
 /* =========================
    RESPONSIVE
 ========================= */

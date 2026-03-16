@@ -1159,6 +1159,39 @@ body.light-mode .form-group select option[disabled] {
     border-color: rgba(212,167,106,0.25);
 }
 
+/* Fila de botones secundarios */
+.pgm-button-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+/* Botón explorar planes */
+.pgm-explore-btn {
+    flex: 1;
+    padding: 11px;
+    background: rgba(212,167,106,0.08);
+    color: rgba(212,167,106,0.85);
+    border: 1.5px solid rgba(212,167,106,0.2);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pgm-explore-btn:hover {
+    background: rgba(212,167,106,0.12);
+    border-color: rgba(212,167,106,0.35);
+    color: rgba(212,167,106,0.95);
+}
+
+.pgm-button-row .pgm-close-link {
+    flex: 1;
+    margin: 0;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
     .premium-gate-modal.pgm-modal {

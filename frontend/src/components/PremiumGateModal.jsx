@@ -122,12 +122,17 @@ function PremiumGateModal({
                             <rect x="0.5" y="6" width="13" height="10" rx="1.5" fill="none" stroke="rgba(26,15,4,0.55)" strokeWidth="1.2" />
                             <path d="M3.5 6V4a3.5 3.5 0 0 1 7 0v2" stroke="rgba(26,15,4,0.55)" strokeWidth="1.4" fill="none" strokeLinecap="round" />
                         </svg>
-                        Suscribirse &middot; {currentPlan?.label} por ${currentPlan?.price.toFixed(2)}
+                        Pagar Ahora &middot; {currentPlan?.label} por ${currentPlan?.price.toFixed(2)}
                     </button>
 
-                    <button className="pgm-close-link" onClick={onClose}>
-                        No por ahora
-                    </button>
+                    <div className="pgm-button-row">
+                        <button className="pgm-explore-btn" onClick={handleSubscribe}>
+                            Ir a Planes Premium
+                        </button>
+                        <button className="pgm-close-link" onClick={onClose}>
+                            No por ahora
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
